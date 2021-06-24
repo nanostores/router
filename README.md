@@ -3,18 +3,19 @@
 <img align="right" width="95" height="148" title="Logux logotype"
      src="https://logux.io/branding/logotype.svg">
 
-*Under construction*
+A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
+state manager.
 
-<a href="https://evilmartians.com/?utm_source=logux-client">
-  <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg"
-       alt="Sponsored by Evil Martians" width="236" height="54">
-</a>
+* **Small.** 660 bytes (minified and gzipped).
+  Zero dependencies. It uses [Size Limit] to control size.
+* It has good **TypeScript** support.
 
-Since we promote moving logic to store, the router is a good part
+Since Nano Stores promote moving logic to store, the router is a good part
 of the application to be moved from UI framework like React.
 
 ```ts
-import { createRouter } from 'nanostores'
+// stores/router.ts
+import { createRouter } from '@nanostores/router'
 
 // Types for :params in route templates
 interface Routes {
@@ -32,6 +33,46 @@ export const router = createRouter<Routes>({
 
 Store in active mode listen for `<a>` clicks on `document.body` and Back button
 in browser.
+
+```ts
+// components/layout.tsx
+import { useStore } from 'nanostores/react'
+
+import { router } from '../stores/router'
+
+export const Layout = () => {
+  const page = useStore(router)
+  if (page.route === 'home') {
+    return <HomePage />
+  } else if (page.route === 'category') {
+    return <CategoryPage categoryId={page.params.categoryId} />
+  } else if (page.route === 'post') {
+    return <PostPage
+      categoryId={page.params.categoryId}
+      postId={page.params.postId}
+    />
+  } else {
+    return <NotFoundPage />
+  }
+}
+```
+
+<a href="https://evilmartians.com/?utm_source=logux-client">
+  <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg"
+       alt="Sponsored by Evil Martians" width="236" height="54">
+</a>
+
+[Size Limit]: https://github.com/ai/size-limit
+
+
+## Install
+
+```sh
+npm install nanostores @nanostores/router
+```
+
+
+## Usage
 
 You can use `getPagePath()` to avoid hard coding URL to a template. It is better
 to use the router as a single place of truth.
