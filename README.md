@@ -10,10 +10,10 @@ state manager.
   Zero dependencies. It uses [Size Limit] to control size.
 * It has good **TypeScript** support.
 * Framework agnostic. Can be used for **React**, **Preact**, **Vue**,
-  **Svelte**, and vanilla JS
+  **Svelte**, and vanilla JS.
 
 Since Nano Stores promote moving logic to store, the router is a store,
-not a component in UI framework like React.
+not a component in UI framework like React.
 
 ```ts
 // stores/router.ts
@@ -76,7 +76,7 @@ npm install nanostores @nanostores/router
 
 ## Usage
 
-You can use `getPagePath()` to avoid hard coding URL to a template. It is better
+Using `getPagePath()` avoids hard coding URL in templates. It is better
 to use the router as a single place of truth.
 
 ```tsx
