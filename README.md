@@ -9,6 +9,8 @@ state manager.
 * **Small.** 660 bytes (minified and gzipped).
   Zero dependencies. It uses [Size Limit] to control size.
 * It has good **TypeScript** support.
+* Framework agnostic. Can be used for **React**, **Preact**, **Vue**,
+  **Svelte**, and vanilla JS
 
 Since Nano Stores promote moving logic to store, the router is a store,
 not a component in UI framework like React.

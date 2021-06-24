@@ -133,7 +133,10 @@
       "Versioning",
       "UI",
       "programmatically",
-      "gzipped"
+      "gzipped",
+      "Preact",
+      "Vue",
+      "JS"
     ]
   },
   "sharec": {
