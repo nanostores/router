@@ -40,7 +40,7 @@ in browser.
 // components/layout.tsx
 import { useStore } from 'nanostores/react'
 
-import { router } from '../stores/router'
+import { router } from '../stores/router.js'
 
 export const Layout = () => {
   const page = useStore(router)
