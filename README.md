@@ -49,12 +49,9 @@ export const Layout = () => {
   } else if (page.route === 'category') {
     return <CategoryPage categoryId={page.params.categoryId} />
   } else if (page.route === 'post') {
-    return <PostPage
-      categoryId={page.params.categoryId}
-      postId={page.params.postId}
-    />
+    return <PostPage postId={page.params.postId} />
   } else {
-    return <NotFoundPage />
+    return <Error404 />
   }
 }
 ```
