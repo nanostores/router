@@ -10,8 +10,8 @@ state manager.
   Zero dependencies. It uses [Size Limit] to control size.
 * It has good **TypeScript** support.
 
-Since Nano Stores promote moving logic to store, the router is a good part
-of the application to be moved from UI framework like React.
+Since Nano Stores promote moving logic to store, the router is a store,
+not a component in UI framework like React.
 
 ```ts
 // stores/router.ts
@@ -78,7 +78,7 @@ You can use `getPagePath()` to avoid hard coding URL to a template. It is better
 to use the router as a single place of truth.
 
 ```tsx
-import { getPagePath } from 'nanostores'
+import { getPagePath } from '@nanostores/router'
 
 …
   <a href={getPagePath(router, 'post', { categoryId: 'guides', id: '10' })}>
@@ -88,7 +88,7 @@ If you need to change URL programmatically you can use `openPage`
 or `replacePage`:
 
 ```ts
-import { openPage, replacePage } from 'nanostores'
+import { openPage, replacePage } from '@nanostores/router'
 
 function requireLogin () {
   openPage(router, 'login')
