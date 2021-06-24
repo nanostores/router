@@ -36,7 +36,7 @@ export const router = createRouter<Routes>({
 Store in active mode listen for `<a>` clicks on `document.body` and Back button
 in browser.
 
-```ts
+```tsx
 // components/layout.tsx
 import { useStore } from 'nanostores/react'
 
