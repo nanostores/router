@@ -73,6 +73,42 @@ npm install nanostores @nanostores/router
 
 ## Usage
 
+See [Nano Stores docs](https://github.com/nanostores/nanostores#guide)
+about using the store and subscribing to store’s changes in UI frameworks.
+
+
+### Routes
+
+Routes is an object of route’s name to route pattern:
+
+```ts
+createRouter({
+  route1: '/',
+  route2: '/path/:var1/and/:var2',
+  route3: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ type, id })]
+})
+```
+
+For string patterns you can use `:name` for variable parts.
+
+Routes can have RegExp patterns. They should be an array with function,
+which convert `()` groups to key-value map.
+
+For TypeScript, you need specify interface with variable names, used in routes.
+
+```ts
+interface Routes {
+  routeName: 'var1' | 'var2'
+}
+
+createRouter<Routes>({
+  routeName: '/path/:var1/and/:var2'
+})
+```
+
+
+### URL Generation
+
 Using `getPagePath()` avoids hard coding URL in templates. It is better
 to use the router as a single place of truth.
 

@@ -136,7 +136,8 @@
       "gzipped",
       "Preact",
       "Vue",
-      "JS"
+      "JS",
+      "RegExp"
     ]
   },
   "sharec": {
