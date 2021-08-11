@@ -74,14 +74,19 @@ export function createRouter(routes) {
   }
 
   let router = createStore(() => {
-    let page = parse(location.pathname)
-    if (page !== false) set(page)
-    document.body.addEventListener('click', click)
-    window.addEventListener('popstate', popstate)
-    return () => {
-      prev = undefined
-      document.body.removeEventListener('click', click)
-      window.removeEventListener('popstate', popstate)
+    if (typeof window !== 'undefined' && typeof location !== 'undefined') {
+      let page = parse(location.pathname)
+      if (page !== false) set(page)
+      document.body.addEventListener('click', click)
+      window.addEventListener('popstate', popstate)
+      return () => {
+        prev = undefined
+        document.body.removeEventListener('click', click)
+        window.removeEventListener('popstate', popstate)
+      }
+    } else {
+      let page = parse('/')
+      if (page !== false) set(page)
     }
   })
 
@@ -95,7 +100,9 @@ export function createRouter(routes) {
   router.open = (path, redirect) => {
     let page = parse(path)
     if (page !== false) {
-      history[redirect ? 'replaceState' : 'pushState'](null, null, path)
+      if (typeof history !== 'undefined') {
+        history[redirect ? 'replaceState' : 'pushState'](null, null, path)
+      }
       set(page)
     }
   }

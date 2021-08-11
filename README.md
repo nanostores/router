@@ -6,7 +6,7 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-* **Small.** 660 bytes (minified and gzipped).
+* **Small.** 688 bytes (minified and gzipped).
   Zero dependencies. It uses [Size Limit] to control size.
 * It has good **TypeScript** support.
 * Framework agnostic. Can be used for **React**, **Preact**, **Vue**,
@@ -132,5 +132,19 @@ function requireLogin () {
 function onLoginSuccess() {
   // Replace login route, so we don’t face it on back navigation
   replacePage(router, 'home')
+}
+```
+
+
+### Server-Side Rendering
+
+Router can be used in Node environment without `window` and `location`.
+In this case, it will always return route to `/` path.
+
+You can manually set any other route:
+
+```js
+if (isServer) {
+  router.open('/posts/demo/1')
 }
 ```
