@@ -1,4 +1,4 @@
-import { WritableStore } from 'nanostores'
+import { ReadableStore } from 'nanostores'
 
 type Params<Names extends string> = {
   [name in Names]: string
@@ -53,7 +53,7 @@ export type Page<
  * ```
  */
 export interface Router<AppPages extends Pages = Pages>
-  extends WritableStore<Page<AppPages, keyof AppPages> | undefined> {
+  extends ReadableStore<Page<AppPages, keyof AppPages> | undefined> {
   /**
    * Converted routes.
    */
