@@ -34,10 +34,10 @@
     "@babel/core": "^7.15.0",
     "@logux/core": "^0.7.1",
     "@logux/eslint-config": "^45.4.7",
-    "@logux/sharec-config": "^0.10.2",
+    "@logux/sharec-config": "^0.11.0",
     "@size-limit/preset-small-lib": "^5.0.2",
     "@types/jest": "^27.0.0",
-    "@types/node": "^16.4.13",
+    "@types/node": "^16.4.14",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
     "check-dts": "^0.5.5",
@@ -87,8 +87,8 @@
     "preset": "ts-jest/presets/default-esm",
     "globals": {
       "ts-jest": {
-        "isolatedModules": true,
-        "useESM": true
+        "useESM": true,
+        "isolatedModules": true
       }
     },
     "testEnvironment": "jsdom",
@@ -142,6 +142,6 @@
   },
   "sharec": {
     "config": "@logux/sharec-config",
-    "version": "0.10.2"
+    "version": "0.11.0"
   }
 }
