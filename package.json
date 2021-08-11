@@ -1,6 +1,6 @@
 {
   "name": "@nanostores/router",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A tiny (686 bytes) router for Nano Stores state manager",
   "keywords": [
     "nano",
