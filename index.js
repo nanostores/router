@@ -85,8 +85,7 @@ export function createRouter(routes) {
         window.removeEventListener('popstate', popstate)
       }
     } else {
-      let page = parse('/')
-      if (page !== false) set(page)
+      set(parse('/'))
     }
   })
 
@@ -101,7 +100,11 @@ export function createRouter(routes) {
     let page = parse(path)
     if (page !== false) {
       if (typeof history !== 'undefined') {
-        history[redirect ? 'replaceState' : 'pushState'](null, null, path)
+        if (redirect) {
+          history.replaceState(null, null, path)
+        } else {
+          history.pushState(null, null, path)
+        }
       }
       set(page)
     }
