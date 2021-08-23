@@ -120,10 +120,10 @@ import { getPagePath } from '@nanostores/router'
 ```
 
 If you need to change URL programmatically you can use `openPage`
-or `replacePage`:
+or `redirectPage`:
 
 ```ts
-import { openPage, replacePage } from '@nanostores/router'
+import { openPage, redirectPage } from '@nanostores/router'
 
 function requireLogin () {
   openPage(router, 'login')
@@ -131,7 +131,7 @@ function requireLogin () {
 
 function onLoginSuccess() {
   // Replace login route, so we don’t face it on back navigation
-  replacePage(router, 'home')
+  redirectPage(router, 'home')
 }
 ```
 
