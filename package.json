@@ -31,35 +31,35 @@
     "nanostores": "^0.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@logux/core": "^0.7.1",
-    "@logux/eslint-config": "^45.4.7",
-    "@logux/sharec-config": "^0.11.0",
-    "@size-limit/preset-small-lib": "^5.0.2",
-    "@types/jest": "^27.0.0",
-    "@types/node": "^16.4.14",
-    "@typescript-eslint/eslint-plugin": "^4.29.1",
-    "@typescript-eslint/parser": "^4.29.1",
-    "check-dts": "^0.5.5",
-    "clean-publish": "^2.2.0",
-    "eslint": "^7.32.0",
+    "@babel/core": "^7.15.8",
+    "@logux/core": "^0.7.2",
+    "@logux/eslint-config": "^46.0.0",
+    "@logux/sharec-config": "^0.12.2",
+    "@size-limit/preset-small-lib": "^6.0.3",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "check-dts": "^0.6.1",
+    "clean-publish": "^3.4.1",
+    "eslint": "^8.0.1",
     "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.24.0",
-    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jest": "^25.2.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prefer-let": "^1.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-security": "^1.4.0",
-    "eslint-plugin-unicorn": "^35.0.0",
-    "jest": "^27.0.6",
-    "lint-staged": "^11.1.2",
-    "nanostores": "^0.4.3",
-    "prettier": "^2.3.2",
-    "simple-git-hooks": "^2.5.1",
-    "size-limit": "^5.0.2",
-    "ts-jest": "^27.0.4",
-    "typescript": "^4.3.5",
-    "yaspeller": "^7.0.0"
+    "eslint-plugin-unicorn": "^37.0.1",
+    "jest": "^27.2.5",
+    "lint-staged": "^11.2.3",
+    "nanostores": "^0.4.9",
+    "prettier": "^2.4.1",
+    "simple-git-hooks": "^2.6.1",
+    "size-limit": "^6.0.3",
+    "ts-jest": "^27.0.6",
+    "typescript": "^4.4.4",
+    "yaspeller": "^7.2.0"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
@@ -119,9 +119,12 @@
       "import": {
         "./index.js": "{ createRouter }"
       },
-      "limit": "686 B"
+      "limit": "749 B"
     }
   ],
+  "clean-publish": {
+    "cleanDocs": true
+  },
   "yaspeller": {
     "lang": "en",
     "ignoreCapitalization": true,
@@ -142,6 +145,6 @@
   },
   "sharec": {
     "config": "@logux/sharec-config",
-    "version": "0.11.0"
+    "version": "0.12.2"
   }
 }

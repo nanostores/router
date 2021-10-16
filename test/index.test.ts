@@ -158,7 +158,7 @@ it('accepts click on tag inside link', () => {
 
   let link = createTag(document.body, 'a', { href: '/posts' })
   createTag(link, 'span').click()
-  expect(getValue(router)?.path).toEqual('/posts')
+  expect(getValue(router)?.path).toBe('/posts')
 })
 
 it('ignore non-link clicks', () => {
@@ -166,7 +166,7 @@ it('ignore non-link clicks', () => {
   listen()
 
   createTag(document.body, 'span', { href: '/posts' }).click()
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('ignores special clicks', () => {
@@ -177,7 +177,7 @@ it('ignores special clicks', () => {
   let event = new MouseEvent('click', { bubbles: true, ctrlKey: true })
   link.dispatchEvent(event)
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('ignores other mouse button click', () => {
@@ -188,7 +188,7 @@ it('ignores other mouse button click', () => {
   let event = new MouseEvent('click', { bubbles: true, button: 2 })
   link.dispatchEvent(event)
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('ignores prevented events', () => {
@@ -202,7 +202,7 @@ it('ignores prevented events', () => {
   })
   span.click()
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('ignores links with noRouter data attribute', () => {
@@ -214,7 +214,7 @@ it('ignores links with noRouter data attribute', () => {
   let span = createTag(link, 'span')
   span.click()
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('ignores new-tab links', () => {
@@ -224,7 +224,7 @@ it('ignores new-tab links', () => {
   let link = createTag(document.body, 'a', { href: '/posts', target: '_blank' })
   link.click()
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('ignores external links', () => {
@@ -234,7 +234,7 @@ it('ignores external links', () => {
   let link = createTag(document.body, 'a', { href: 'http://lacalhast/posts' })
   link.click()
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
   expect(events).toHaveLength(0)
 })
 
@@ -256,7 +256,7 @@ it('respects data-ignore-router', () => {
   link.setAttribute('data-no-router', '1')
   link.click()
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('respects external rel', () => {
@@ -269,7 +269,7 @@ it('respects external rel', () => {
   })
   link.click()
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('respects download attribute', () => {
@@ -282,7 +282,7 @@ it('respects download attribute', () => {
   })
   link.click()
 
-  expect(getValue(router)?.path).toEqual('/')
+  expect(getValue(router)?.path).toBe('/')
 })
 
 it('opens URLs manually', () => {
@@ -290,7 +290,7 @@ it('opens URLs manually', () => {
   let events = listen()
 
   router.open('/posts/')
-  expect(location.href).toEqual('http://localhost/posts/')
+  expect(location.href).toBe('http://localhost/posts/')
   expect(getValue(router)).toEqual({
     path: '/posts',
     route: 'posts',
@@ -317,11 +317,11 @@ it('allows RegExp routes', () => {
 })
 
 it('generates URLs', () => {
-  expect(getPagePath(router, 'home')).toEqual('/')
-  expect(getPagePath(router, 'posts')).toEqual('/posts')
-  expect(
-    getPagePath(router, 'post', { categoryId: 'guides', id: '1' })
-  ).toEqual('/posts/guides/1')
+  expect(getPagePath(router, 'home')).toBe('/')
+  expect(getPagePath(router, 'posts')).toBe('/posts')
+  expect(getPagePath(router, 'post', { categoryId: 'guides', id: '1' })).toBe(
+    '/posts/guides/1'
+  )
 })
 
 it('opens URLs manually by route name, pushing new stare', () => {
@@ -329,9 +329,9 @@ it('opens URLs manually by route name, pushing new stare', () => {
   changePath('/')
   listen()
   openPage(router, 'post', { categoryId: 'guides', id: '10' })
-  expect(history.length - start).toEqual(2)
+  expect(history.length - start).toBe(2)
 
-  expect(location.href).toEqual('http://localhost/posts/guides/10')
+  expect(location.href).toBe('http://localhost/posts/guides/10')
   expect(getValue(router)).toEqual({
     path: '/posts/guides/10',
     route: 'post',
@@ -347,9 +347,9 @@ it('opens URLs manually by route name, replacing state', () => {
   changePath('/')
   listen()
   redirectPage(router, 'post', { categoryId: 'guides', id: '10' })
-  expect(history.length - start).toEqual(1)
+  expect(history.length - start).toBe(1)
 
-  expect(location.href).toEqual('http://localhost/posts/guides/10')
+  expect(location.href).toBe('http://localhost/posts/guides/10')
   expect(getValue(router)).toEqual({
     path: '/posts/guides/10',
     route: 'post',
@@ -362,7 +362,7 @@ it('opens URLs manually by route name, replacing state', () => {
 
 it('throws on openning RegExp router', () => {
   expect(() => {
-    expect(getPagePath(router, 'draft', { type: 'new', id: '1' })).toEqual('/')
+    expect(getPagePath(router, 'draft', { type: 'new', id: '1' })).toBe('/')
   }).toThrow('RegExp routes are not supported')
 })
 
@@ -373,7 +373,7 @@ it('supports link with hash in URL with same path', () => {
   let link = createTag(document.body, 'a', { href: '/posts#hash' })
   link.click()
 
-  expect(location.hash).toEqual('#hash')
+  expect(location.hash).toBe('#hash')
   expect(events).toHaveLength(0)
 })
 
@@ -384,7 +384,7 @@ it('supports link with hash in URL and different path', () => {
   let link = createTag(document.body, 'a', { href: '/posts?q=1#hash' })
   link.click()
 
-  expect(location.hash).toEqual('#hash')
+  expect(location.hash).toBe('#hash')
   expect(events).toEqual(['/posts'])
 })
 
@@ -401,7 +401,7 @@ it('generates artificial hashchange event for empty hash', () => {
   link.click()
 
   window.removeEventListener('hashchange', onHashChange)
-  expect(location.hash).toEqual('')
+  expect(location.hash).toBe('')
   expect(events).toHaveLength(0)
-  expect(hashChangeCalled).toEqual(1)
+  expect(hashChangeCalled).toBe(1)
 })
