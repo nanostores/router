@@ -1,7 +1,8 @@
 import { atom, onMount } from 'nanostores'
 
 export function createRouter(routes) {
-  let normalized = Object.keys(routes).map(name => {
+  let router = atom()
+  router.routes = Object.keys(routes).map(name => {
     let value = routes[name]
     if (typeof value === 'string') {
       value = value.replace(/\/$/g, '') || '/'
@@ -30,7 +31,7 @@ export function createRouter(routes) {
     if (prev === path) return false
     prev = path
 
-    for (let [route, pattern, cb] of normalized) {
+    for (let [route, pattern, cb] of router.routes) {
       let match = path.match(pattern)
       if (match) {
         return { path, route, params: cb(...match.slice(1)) }
@@ -68,8 +69,6 @@ export function createRouter(routes) {
     }
   }
 
-  let router = atom()
-
   let set = router.set
   if (process.env.NODE_ENV !== 'production') {
     delete router.set
@@ -95,8 +94,6 @@ export function createRouter(routes) {
   } else {
     set(parse('/'))
   }
-
-  router.routes = normalized
 
   router.open = (path, redirect) => {
     let page = parse(path)
