@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { cleanStores, getValue } from 'nanostores'
+import { cleanStores } from 'nanostores'
 
 import { createRouter } from '../index.js'
 
@@ -19,7 +19,7 @@ afterEach(() => {
 })
 
 it('opens home by default', () => {
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/',
     route: 'home',
     params: {}
@@ -29,7 +29,7 @@ it('opens home by default', () => {
 it('opens cutom page', () => {
   router.listen(() => {})
   router.open('/posts')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts',
     route: 'posts',
     params: {}

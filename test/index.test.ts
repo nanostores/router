@@ -1,4 +1,4 @@
-import { cleanStores, getValue } from 'nanostores'
+import { cleanStores } from 'nanostores'
 import { jest } from '@jest/globals'
 
 import { createRouter, getPagePath, openPage, redirectPage } from '../index.js'
@@ -57,7 +57,7 @@ afterEach(() => {
 
 it('parses current location', () => {
   changePath('/posts/guides/10')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts/guides/10',
     route: 'post',
     params: {
@@ -69,7 +69,7 @@ it('parses current location', () => {
 
 it('ignores last slash', () => {
   changePath('/posts/guides/10/')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts/guides/10',
     route: 'post',
     params: {
@@ -81,12 +81,12 @@ it('ignores last slash', () => {
 
 it('processes 404', () => {
   changePath('/posts/guides')
-  expect(getValue(router)).toBeUndefined()
+  expect(router.get()).toBeUndefined()
 })
 
 it('escapes RegExp symbols in routes', () => {
   changePath('/[secret]/9')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/[secret]/9',
     route: 'secret',
     params: {
@@ -97,7 +97,7 @@ it('escapes RegExp symbols in routes', () => {
 
 it('ignores hash and search', () => {
   changePath('/posts/?id=1#top')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts',
     route: 'posts',
     params: {}
@@ -106,7 +106,7 @@ it('ignores hash and search', () => {
 
 it('ignores case', () => {
   changePath('/POSTS')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/POSTS',
     route: 'posts',
     params: {}
@@ -118,7 +118,7 @@ it('detects URL changes', () => {
   let events = listen()
 
   changePath('/')
-  expect(getValue(router)).toEqual({ path: '/', route: 'home', params: {} })
+  expect(router.get()).toEqual({ path: '/', route: 'home', params: {} })
   expect(events).toEqual(['/'])
 })
 
@@ -144,7 +144,7 @@ it('detects clicks', () => {
   let events = listen()
 
   createTag(document.body, 'a', { href: '/posts' }).click()
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts',
     route: 'posts',
     params: {}
@@ -158,7 +158,7 @@ it('accepts click on tag inside link', () => {
 
   let link = createTag(document.body, 'a', { href: '/posts' })
   createTag(link, 'span').click()
-  expect(getValue(router)?.path).toBe('/posts')
+  expect(router.get()?.path).toBe('/posts')
 })
 
 it('ignore non-link clicks', () => {
@@ -166,7 +166,7 @@ it('ignore non-link clicks', () => {
   listen()
 
   createTag(document.body, 'span', { href: '/posts' }).click()
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('ignores special clicks', () => {
@@ -177,7 +177,7 @@ it('ignores special clicks', () => {
   let event = new MouseEvent('click', { bubbles: true, ctrlKey: true })
   link.dispatchEvent(event)
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('ignores other mouse button click', () => {
@@ -188,7 +188,7 @@ it('ignores other mouse button click', () => {
   let event = new MouseEvent('click', { bubbles: true, button: 2 })
   link.dispatchEvent(event)
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('ignores prevented events', () => {
@@ -202,7 +202,7 @@ it('ignores prevented events', () => {
   })
   span.click()
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('ignores links with noRouter data attribute', () => {
@@ -214,7 +214,7 @@ it('ignores links with noRouter data attribute', () => {
   let span = createTag(link, 'span')
   span.click()
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('ignores new-tab links', () => {
@@ -224,7 +224,7 @@ it('ignores new-tab links', () => {
   let link = createTag(document.body, 'a', { href: '/posts', target: '_blank' })
   link.click()
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('ignores external links', () => {
@@ -234,7 +234,7 @@ it('ignores external links', () => {
   let link = createTag(document.body, 'a', { href: 'http://lacalhast/posts' })
   link.click()
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
   expect(events).toHaveLength(0)
 })
 
@@ -256,7 +256,7 @@ it('respects data-ignore-router', () => {
   link.setAttribute('data-no-router', '1')
   link.click()
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('respects external rel', () => {
@@ -269,7 +269,7 @@ it('respects external rel', () => {
   })
   link.click()
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('respects download attribute', () => {
@@ -282,7 +282,7 @@ it('respects download attribute', () => {
   })
   link.click()
 
-  expect(getValue(router)?.path).toBe('/')
+  expect(router.get()?.path).toBe('/')
 })
 
 it('opens URLs manually', () => {
@@ -291,7 +291,7 @@ it('opens URLs manually', () => {
 
   router.open('/posts/')
   expect(location.href).toBe('http://localhost/posts/')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts',
     route: 'posts',
     params: {}
@@ -309,7 +309,7 @@ it('ignores the same URL in manual URL', () => {
 
 it('allows RegExp routes', () => {
   changePath('/posts/draft/10/')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts/draft/10',
     route: 'draft',
     params: { type: 'draft', id: '10' }
@@ -332,7 +332,7 @@ it('opens URLs manually by route name, pushing new stare', () => {
   expect(history.length - start).toBe(2)
 
   expect(location.href).toBe('http://localhost/posts/guides/10')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts/guides/10',
     route: 'post',
     params: {
@@ -350,7 +350,7 @@ it('opens URLs manually by route name, replacing state', () => {
   expect(history.length - start).toBe(1)
 
   expect(location.href).toBe('http://localhost/posts/guides/10')
-  expect(getValue(router)).toEqual({
+  expect(router.get()).toEqual({
     path: '/posts/guides/10',
     route: 'post',
     params: {

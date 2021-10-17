@@ -1,4 +1,4 @@
-import { createStore } from 'nanostores'
+import { atom, onMount } from 'nanostores'
 
 export function createRouter(routes) {
   let normalized = Object.keys(routes).map(name => {
@@ -68,13 +68,20 @@ export function createRouter(routes) {
     }
   }
 
+  let router = atom()
+
+  let set = router.set
+  if (process.env.NODE_ENV !== 'production') {
+    delete router.set
+  }
+
   let popstate = () => {
     let page = parse(location.pathname)
     if (page !== false) set(page)
   }
 
-  let router = createStore(() => {
-    if (typeof window !== 'undefined' && typeof location !== 'undefined') {
+  if (typeof window !== 'undefined' && typeof location !== 'undefined') {
+    onMount(router, () => {
       let page = parse(location.pathname)
       if (page !== false) set(page)
       document.body.addEventListener('click', click)
@@ -84,17 +91,12 @@ export function createRouter(routes) {
         document.body.removeEventListener('click', click)
         window.removeEventListener('popstate', popstate)
       }
-    } else {
-      set(parse('/'))
-    }
-  })
+    })
+  } else {
+    set(parse('/'))
+  }
 
   router.routes = normalized
-
-  let set = router.set
-  if (process.env.NODE_ENV !== 'production') {
-    delete router.set
-  }
 
   router.open = (path, redirect) => {
     let page = parse(path)
