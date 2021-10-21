@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2
+* Moved to Nano Stores 0.5.
+
 ## 0.1.1
 * Fixed Server-Side Rendering support.
 
