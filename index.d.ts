@@ -68,8 +68,9 @@ export interface Router<AppPages extends Pages = Pages>
    *
    * @param path Absolute URL (`https://example.com/a`)
    *             or domain-less URL (`/a`).
+   * @param redirect Don't add entry to the navigation history.
    */
-  open(path: string): void
+  open(path: string, redirect?: boolean): void
 }
 
 /**
