@@ -44,14 +44,17 @@ import { router } from '../stores/router.js'
 
 export const Layout = () => {
   const page = useStore(router)
+
+  if (!page) {
+    return <Error404 />
+  }
+
   if (page.route === 'home') {
     return <HomePage />
   } else if (page.route === 'category') {
     return <CategoryPage categoryId={page.params.categoryId} />
   } else if (page.route === 'post') {
     return <PostPage postId={page.params.postId} />
-  } else {
-    return <Error404 />
   }
 }
 ```
