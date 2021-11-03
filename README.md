@@ -47,9 +47,7 @@ export const Layout = () => {
 
   if (!page) {
     return <Error404 />
-  }
-
-  if (page.route === 'home') {
+  } else if (page.route === 'home') {
     return <HomePage />
   } else if (page.route === 'category') {
     return <CategoryPage categoryId={page.params.categoryId} />
