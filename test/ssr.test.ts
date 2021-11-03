@@ -1,8 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { cleanStores } from 'nanostores'
+import { equal } from 'uvu/assert'
+import { test } from 'uvu'
 
 import { createRouter } from '../index.js'
 
@@ -14,24 +12,26 @@ let router = createRouter<{
   home: '/'
 })
 
-afterEach(() => {
+test.after.each(() => {
   cleanStores(router)
 })
 
-it('opens home by default', () => {
-  expect(router.get()).toEqual({
+test('opens home by default', () => {
+  equal(router.get(), {
     path: '/',
     route: 'home',
     params: {}
   })
 })
 
-it('opens cutom page', () => {
+test('opens custom page', () => {
   router.listen(() => {})
   router.open('/posts')
-  expect(router.get()).toEqual({
+  equal(router.get(), {
     path: '/posts',
     route: 'posts',
     params: {}
   })
 })
+
+test.run()
