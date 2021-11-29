@@ -1,7 +1,13 @@
 import { atom, onMount } from 'nanostores'
 
-export function createRouter(routes) {
+export function createRouter(routes, options) {
   let router = atom()
+  let isHashRouter = options && options.hash;
+
+  let getPathname = isHashRouter
+    ? () => location.hash.replace(/^#\/?/, '')
+    : () => location.pathname
+
   router.routes = Object.keys(routes).map(name => {
     let value = routes[name]
     if (typeof value === 'string') {
@@ -75,20 +81,21 @@ export function createRouter(routes) {
   }
 
   let popstate = () => {
-    let page = parse(location.pathname)
+    let page = parse(getPathname())
     if (page !== false) set(page)
   }
 
   if (typeof window !== 'undefined' && typeof location !== 'undefined') {
     onMount(router, () => {
-      let page = parse(location.pathname)
+      let page = parse(getPathname())
       if (page !== false) set(page)
       document.body.addEventListener('click', click)
-      window.addEventListener('popstate', popstate)
+      let eventName = isHashRouter ? 'hashchange' : 'popstate'
+      window.addEventListener(eventName, popstate)
       return () => {
         prev = undefined
         document.body.removeEventListener('click', click)
-        window.removeEventListener('popstate', popstate)
+        window.removeEventListener(eventName, popstate)
       }
     })
   } else {
@@ -99,10 +106,11 @@ export function createRouter(routes) {
     let page = parse(path)
     if (page !== false) {
       if (typeof history !== 'undefined') {
+        let pageFix = isHashRouter ? '#' + path : path
         if (redirect) {
-          history.replaceState(null, null, path)
+          history.replaceState(null, null, pageFix)
         } else {
-          history.pushState(null, null, path)
+          history.pushState(null, null, pageFix)
         }
       }
       set(page)
