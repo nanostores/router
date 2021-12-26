@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "unit": "tsm ./test/index.test.ts && tsm ./test/ssr.test.ts",
-    "test": "c8 yarn unit && eslint . && check-dts && size-limit"
+    "test": "c8 pnpm unit && eslint . && check-dts && size-limit"
   },
   "author": "Andrey Sitnik <andrey@sitnik.ru>",
   "license": "MIT",
