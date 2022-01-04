@@ -386,6 +386,17 @@ test('supports link with hash in URL and different path', () => {
   equal(events, ['/posts'])
 })
 
+test('supports link with search in URL and different path', () => {
+  changePath('/')
+  let events = listen()
+
+  let link = createTag(document.body, 'a', { href: '/posts?q=1#hash' })
+  link.click()
+
+  equal(location.search, '?q=1')
+  equal(events, ['/posts'])
+})
+
 test('generates artificial hashchange event for empty hash', () => {
   changePath('/#hash')
   let events = listen()
