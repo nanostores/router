@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.2
+* Fixed search params disappear when you click on links (by Andrei Eres).
+
 ## 0.2.1
 * Fixed `open()` arguments types (by @davidmz).
 
