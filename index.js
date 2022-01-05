@@ -27,7 +27,7 @@ export function createRouter(routes) {
 
   let prev
   let parse = path => {
-    path = path.replace(/\/$/, '') || '/'
+    path = path.split('?')[0].replace(/\/$/, '') || '/'
     if (prev === path) return false
     prev = path
 
@@ -58,7 +58,7 @@ export function createRouter(routes) {
       if (url.origin === location.origin) {
         event.preventDefault()
         let changed = location.hash !== url.hash
-        router.open(url.pathname)
+        router.open(url.pathname + url.search)
         if (changed) {
           location.hash = url.hash
           if (url.hash === '' || url.hash === '#') {
