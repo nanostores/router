@@ -135,6 +135,11 @@ test('ignores case', () => {
 })
 
 test('parameters can be optional', () => {
+  equal(
+    getPagePath(router, 'optional', { id: '10', tab: '' }),
+    '/profile/10'
+  )
+
   changePath('/profile/')
   equal(router.get(), {
     path: '/profile',

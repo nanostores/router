@@ -91,7 +91,7 @@
       "import": {
         "./index.js": "{ createRouter }"
       },
-      "limit": "793 B"
+      "limit": "792 B"
     }
   ],
   "clean-publish": {
