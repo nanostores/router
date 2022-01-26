@@ -6,7 +6,7 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-* **Small.** 780 bytes (minified and gzipped).
+* **Small.** 793 bytes (minified and gzipped).
   Zero dependencies. It uses [Size Limit] to control size.
 * It has good **TypeScript** support.
 * Framework agnostic. Can be used for **React**, **Preact**, **Vue**,
@@ -90,7 +90,14 @@ createRouter({
 })
 ```
 
-For string patterns you can use `:name` for variable parts.
+For string patterns you can use `:name` for variable parts. To make the
+parameter optional, mark it with the `?` modifier:
+
+```ts
+createRouter({
+  routeName: '/profile/:id?/:tab?'
+})
+```
 
 Routes can have RegExp patterns. They should be an array with function,
 which convert `()` groups to key-value map.

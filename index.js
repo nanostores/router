@@ -9,6 +9,7 @@ export function createRouter(routes) {
       let names = (value.match(/\/:\w+/g) || []).map(i => i.slice(2))
       let pattern = value
         .replace(/[\s!#$()+,.:<=?[\\\]^{|}]/g, '\\$&')
+        .replace(/\/\\:\w+\\\?/g, '/?([^/]*)')
         .replace(/\/\\:\w+/g, '/([^/]+)')
       return [
         name,

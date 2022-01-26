@@ -45,12 +45,14 @@ function createTag(
 }
 
 let router = createRouter<{
+  optional: 'id' | 'tab'
   secret: 'id'
   posts: void
   draft: 'type' | 'id'
   post: 'categoryId' | 'id'
   home: void
 }>({
+  optional: '/profile/:id?/:tab?',
   secret: '/[secret]/:id',
   posts: '/posts/',
   draft: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ type, id })],
@@ -129,6 +131,38 @@ test('ignores case', () => {
     path: '/POSTS',
     route: 'posts',
     params: {}
+  })
+})
+
+test('parameters can be optional', () => {
+  changePath('/profile/')
+  equal(router.get(), {
+    path: '/profile',
+    route: 'optional',
+    params: {
+      id: '',
+      tab: ''
+    }
+  })
+
+  changePath('/profile/10/')
+  equal(router.get(), {
+    path: '/profile/10',
+    route: 'optional',
+    params: {
+      id: '10',
+      tab: ''
+    }
+  })
+
+  changePath('/profile/10/contacts')
+  equal(router.get(), {
+    path: '/profile/10/contacts',
+    route: 'optional',
+    params: {
+      id: '10',
+      tab: 'contacts'
+    }
   })
 })
 
