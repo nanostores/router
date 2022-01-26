@@ -9,6 +9,7 @@ export function createRouter(routes) {
       let names = (value.match(/\/:\w+/g) || []).map(i => i.slice(2))
       let pattern = value
         .replace(/[\s!#$()+,.:<=?[\\\]^{|}]/g, '\\$&')
+        .replace(/\/\\:\w+\\\?/g, '/?([^/]*)')
         .replace(/\/\\:\w+/g, '/([^/]+)')
       return [
         name,
@@ -117,7 +118,13 @@ export function getPagePath(router, name, params) {
   if (process.env.NODE_ENV !== 'production') {
     if (!route[3]) throw new Error('RegExp routes are not supported')
   }
-  return route[3].replace(/\/:\w+/g, i => '/' + params[i.slice(2)])
+  let path = route[3]
+    .replace(/\/:\w+\?/g, i => {
+      let param = params[i.slice(2).slice(0, -1)]
+      return (param ? '/' : '') + param
+    })
+    .replace(/\/:\w+/g, i => '/' + params[i.slice(2)])
+  return path || '/'
 }
 
 export function openPage(router, name, params) {
