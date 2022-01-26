@@ -6,7 +6,7 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-* **Small.** 793 bytes (minified and gzipped).
+* **Small.** 792 bytes (minified and gzipped).
   Zero dependencies. It uses [Size Limit] to control size.
 * It has good **TypeScript** support.
 * Framework agnostic. Can be used for **React**, **Preact**, **Vue**,
