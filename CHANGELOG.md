@@ -1,8 +1,8 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Next
-* Optional route parameters (by Eduard Aksamitov).
+## 0.3
+* Added optional route parameters (by Eduard Aksamitov).
 
 ## 0.2.2
 * Fixed search params disappear when you click on links (by Andrei Eres).
