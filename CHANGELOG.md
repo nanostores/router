@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.1
+* Fixed URL parameters encoding/decoding.
+
 ## 0.3
 * Added optional route parameters (by Eduard Aksamitov).
 
