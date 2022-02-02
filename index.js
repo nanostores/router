@@ -16,7 +16,7 @@ export function createRouter(routes) {
         RegExp('^' + pattern + '$', 'i'),
         (...matches) =>
           matches.reduce((params, match, index) => {
-            params[names[index]] = match
+            params[names[index]] = decodeURIComponent(match)
             return params
           }, {}),
         value
@@ -121,9 +121,13 @@ export function getPagePath(router, name, params) {
   let path = route[3]
     .replace(/\/:\w+\?/g, i => {
       let param = params[i.slice(2).slice(0, -1)]
-      return (param ? '/' : '') + param
+      if (param) {
+        return '/' + encodeURIComponent(param)
+      } else {
+        return ''
+      }
     })
-    .replace(/\/:\w+/g, i => '/' + params[i.slice(2)])
+    .replace(/\/:\w+/g, i => '/' + encodeURIComponent(params[i.slice(2)]))
   return path || '/'
 }
 

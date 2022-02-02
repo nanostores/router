@@ -116,6 +116,18 @@ test('escapes RegExp symbols in routes', () => {
   })
 })
 
+test('converts URL-encoded symbols', () => {
+  changePath('/posts/a%23b/10')
+  equal(router.get(), {
+    path: '/posts/a%23b/10',
+    route: 'post',
+    params: {
+      categoryId: 'a#b',
+      id: '10'
+    }
+  })
+})
+
 test('ignores hash and search', () => {
   changePath('/posts/?id=1#top')
   equal(router.get(), {
@@ -355,8 +367,13 @@ test('generates URLs', () => {
     '/posts/guides/1'
   )
   equal(
-    getPagePath(router, 'optional', { id: '10', tab: '' }),
-    '/profile/10'
+    getPagePath(router, 'post', { categoryId: 'a#b', id: '1' }),
+    '/posts/a%23b/1'
+  )
+  equal(getPagePath(router, 'optional', { id: '10', tab: '' }), '/profile/10')
+  equal(
+    getPagePath(router, 'optional', { id: '10', tab: 'a#b' }),
+    '/profile/10/a%23b'
   )
 })
 
