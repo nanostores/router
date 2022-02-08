@@ -38,7 +38,7 @@ in browser.
 
 ```tsx
 // components/layout.tsx
-import { useStore } from 'nanostores/react'
+import { useStore } from '@nanostores/react'
 
 import { router } from '../stores/router.js'
 
