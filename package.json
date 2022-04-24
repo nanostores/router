@@ -74,14 +74,8 @@
   "eslintConfig": {
     "extends": "@logux/eslint-config/esm",
     "rules": {
-      "@typescript-eslint/unified-signatures": "off",
       "@typescript-eslint/no-explicit-any": "off",
-      "symbol-description": "off",
-      "consistent-return": "off",
-      "camelcase": "off"
-    },
-    "globals": {
-      "jsdom": false
+      "consistent-return": "off"
     }
   },
   "eslintIgnore": [
