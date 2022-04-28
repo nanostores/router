@@ -94,9 +94,11 @@ export interface Router<AppPages extends Pages = Pages>
  * ```
  *
  * @param routes URL patterns.
+ * @param options (Optional) { hash?: boolean }
  */
 export function createRouter<AppPages extends Pages>(
-  routes: Routes<AppPages>
+  routes: Routes<AppPages>,
+  options?: { hash?: boolean }
 ): Router<AppPages>
 
 /**
