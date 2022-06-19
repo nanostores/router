@@ -6,7 +6,7 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-* **Small.** 808 bytes (minified and gzipped).
+* **Small.** 831 bytes (minified and gzipped).
   Zero dependencies. It uses [Size Limit] to control size.
 * It has good **TypeScript** support.
 * Framework agnostic. Can be used for **React**, **Preact**, **Vue**,
@@ -109,8 +109,20 @@ interface Routes {
   routeName: 'var1' | 'var2'
 }
 
-createRouter<Routes>({
+createRouter<Route
   routeName: '/path/:var1/and/:var2'
+})
+```
+
+### Search query routing
+
+To use search query like `?a=1&b=2` in routes you need to set `search` option:
+
+```js
+createRouter({
+  home: '/p/?page=home'
+}, {
+  search: true
 })
 ```
 

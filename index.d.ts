@@ -30,6 +30,10 @@ export type Page<
     }
   : never
 
+export interface RouterOptions {
+  search?: boolean
+}
+
 /**
  * Router store. Use {@link createRouter} to create it.
  *
@@ -96,7 +100,8 @@ export interface Router<AppPages extends Pages = Pages>
  * @param routes URL patterns.
  */
 export function createRouter<AppPages extends Pages>(
-  routes: Routes<AppPages>
+  routes: Routes<AppPages>,
+  opts?: RouterOptions
 ): Router<AppPages>
 
 /**

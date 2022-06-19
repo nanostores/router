@@ -1,6 +1,6 @@
 import { atom, onMount } from 'nanostores'
 
-export function createRouter(routes) {
+export function createRouter(routes, opts = {}) {
   let router = atom()
   router.routes = Object.keys(routes).map(name => {
     let value = routes[name]
@@ -28,7 +28,8 @@ export function createRouter(routes) {
 
   let prev
   let parse = path => {
-    path = path.split('?')[0].replace(/\/$/, '') || '/'
+    if (!opts.search) path = path.split('?')[0]
+    path = path.replace(/\/($|\?)/, '') || '/'
     if (prev === path) return false
     prev = path
 
@@ -76,13 +77,13 @@ export function createRouter(routes) {
   }
 
   let popstate = () => {
-    let page = parse(location.pathname)
+    let page = parse(location.pathname + location.search)
     if (page !== false) set(page)
   }
 
   if (typeof window !== 'undefined' && typeof location !== 'undefined') {
     onMount(router, () => {
-      let page = parse(location.pathname)
+      let page = parse(location.pathname + location.search)
       if (page !== false) set(page)
       document.body.addEventListener('click', click)
       window.addEventListener('popstate', popstate)

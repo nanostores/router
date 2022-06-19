@@ -470,4 +470,43 @@ test('generates artificial hashchange event for empty hash', () => {
   equal(hashChangeCalled, 1)
 })
 
+test('uses search query on request', () => {
+  let searchRouter = createRouter(
+    {
+      a: '/p?page=a',
+      b: '/p?page=b'
+    },
+    {
+      search: true
+    }
+  )
+
+  changePath('/p?page=a')
+  let events: (string | undefined)[] = []
+  searchRouter.listen(page => {
+    events.push(page?.path)
+  })
+
+  equal(searchRouter.get(), {
+    path: '/p?page=a',
+    route: 'a',
+    params: {}
+  })
+
+  let link = createTag(document.body, 'a', { href: '/p?page=b' })
+  link.click()
+  equal(searchRouter.get(), {
+    path: '/p?page=b',
+    route: 'b',
+    params: {}
+  })
+
+  changePath('/p?page=a')
+  equal(searchRouter.get(), {
+    path: '/p?page=a',
+    route: 'a',
+    params: {}
+  })
+})
+
 test.run()
