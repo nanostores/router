@@ -109,7 +109,7 @@ interface Routes {
   routeName: 'var1' | 'var2'
 }
 
-createRouter<Route
+createRouter<Routes>({
   routeName: '/path/:var1/and/:var2'
 })
 ```
@@ -124,6 +124,37 @@ createRouter({
 }, {
   search: true
 })
+```
+
+Router will works with `?search` part as a string. Parameters order will
+be critical.
+
+There is another store to watch for `?search` parameters separately.
+It can be useful where `?search` is used only as sub-routes for specific page.
+For instance, for filters settings on search page.
+
+```js
+// stores/searchParams.ts
+import { createSearchParams } from '@nanostores/router'
+
+export const searchParams = createSearchParams()
+```
+
+```js
+// stores/searchResult.ts
+import { searchParams } from '../searchParams'
+
+export const searchResult = atom([])
+
+onMount(searchResult, () => {
+  return searchParams.subscribe(params => {
+    searchResult.set(await search(params))
+  })
+})
+
+function changeSearchParam(key: 'sort' | 'filter', value: string) {
+  searchParams.set({ ...searchParams.get(), [key]: value })
+}
 ```
 
 

@@ -98,6 +98,7 @@ export interface Router<AppPages extends Pages = Pages>
  * ```
  *
  * @param routes URL patterns.
+ * @param opts Options.
  */
 export function createRouter<AppPages extends Pages>(
   routes: Routes<AppPages>,
@@ -169,3 +170,35 @@ export function getPagePath<
   name: PageName,
   ...params: RouteParams<AppPages, PageName>
 ): string
+
+/**
+ * Store to watch for `?search` URL part changes.
+ *
+ * It will track history API and clicks on page’s links.
+ */
+export interface SearchParamsStore
+  extends ReadableAtom<Record<string, string>> {
+  /**
+   * Change `?search` URL part and update store value.
+   *
+   * ```js
+   * searchParams.open({ sort: 'name', type: 'small' })
+   * ```
+   *
+   * @param path Absolute URL (`https://example.com/a`)
+   *             or domain-less URL (`/a`).
+   * @param redirect Don’t add entry to the navigation history.
+   */
+  open(params: Record<string, string>, redirect?: boolean): void
+}
+
+/**
+ * Create {@link SearchParamsStore} store to watch for `?search` URL part.
+ *
+ * ```js
+ * import { createSearchParams } from 'nanostores'
+ *
+ * export const searchParams = createSearchParams()
+ * ```
+ */
+export function createSearchParams(): SearchParamsStore

@@ -12,7 +12,7 @@
     "store"
   ],
   "scripts": {
-    "unit": "tsm ./test/index.test.ts && tsm ./test/ssr.test.ts",
+    "unit": "tsm ./test/search.test.ts && tsm ./test/router.test.ts && tsm ./test/ssr.test.ts",
     "test": "c8 pnpm unit && eslint . && check-dts && size-limit"
   },
   "author": "Andrey Sitnik <andrey@sitnik.ru>",
@@ -82,10 +82,18 @@
   ],
   "size-limit": [
     {
+      "name": "Router",
       "import": {
         "./index.js": "{ createRouter }"
       },
-      "limit": "831 B"
+      "limit": "820 B"
+    },
+    {
+      "name": "Search Params",
+      "import": {
+        "./index.js": "{ createSearchParams }"
+      },
+      "limit": "557 B"
     }
   ],
   "clean-publish": {

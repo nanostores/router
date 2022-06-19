@@ -234,20 +234,6 @@ test('ignore non-link clicks', () => {
   equal(router.get()?.path, '/')
 })
 
-test('ignores prevented events', () => {
-  changePath('/')
-  listen()
-
-  let link = createTag(document.body, 'a', { href: '/posts' })
-  let span = createTag(link, 'span')
-  span.addEventListener('click', e => {
-    e.preventDefault()
-  })
-  span.click()
-
-  equal(router.get()?.path, '/')
-})
-
 test('ignores links with noRouter data attribute', () => {
   changePath('/')
   listen()

@@ -44,7 +44,6 @@ export function createRouter(routes, opts = {}) {
   let click = event => {
     let link = event.target.closest('a')
     if (
-      !event.defaultPrevented &&
       link &&
       event.button === 0 &&
       link.target !== '_blank' &&
@@ -138,4 +137,94 @@ export function openPage(router, name, params) {
 
 export function redirectPage(router, name, params) {
   router.open(getPagePath(router, name, params), true)
+}
+
+export function createSearchParams() {
+  let store = atom({})
+
+  let set = store.set
+  if (process.env.NODE_ENV !== 'production') {
+    delete store.set
+  }
+
+  let prev
+  let update = href => {
+    let url = new URL(href)
+    if (prev === url.search) return false
+    prev = url.search
+    set(Object.fromEntries(url.searchParams))
+  }
+
+  store.open = (params, redirect) => {
+    let search = new URLSearchParams(params).toString()
+    if (search) search = '?' + search
+
+    if (prev === search) return
+    prev = search
+
+    if (typeof history !== 'undefined') {
+      let href = location.pathname + search + location.hash
+      if (typeof history !== 'undefined') {
+        if (redirect) {
+          history.replaceState(null, null, href)
+        } else {
+          history.pushState(null, null, href)
+        }
+      }
+    }
+    set(params)
+  }
+
+  let click = event => {
+    let link = event.target.closest('a')
+    if (
+      link &&
+      event.button === 0 &&
+      link.target !== '_blank' &&
+      link.dataset.noRouter == null &&
+      link.rel !== 'external' &&
+      !link.download &&
+      !event.metaKey &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      !event.altKey
+    ) {
+      let url = new URL(link.href)
+      if (url.origin === location.origin) {
+        event.preventDefault()
+        let changed = location.hash !== url.hash
+
+        if (url.search !== prev) {
+          prev = url.search
+          set(Object.fromEntries(url.searchParams))
+        }
+
+        history.pushState(null, null, link.href)
+        if (changed) {
+          location.hash = url.hash
+          if (url.hash === '' || url.hash === '#') {
+            window.dispatchEvent(new HashChangeEvent('hashchange'))
+          }
+        }
+      }
+    }
+  }
+
+  let popstate = () => {
+    update(location.href)
+  }
+
+  if (typeof window !== 'undefined' && typeof location !== 'undefined') {
+    onMount(store, () => {
+      popstate()
+      document.body.addEventListener('click', click)
+      window.addEventListener('popstate', popstate)
+      return () => {
+        document.body.removeEventListener('click', click)
+        window.removeEventListener('popstate', popstate)
+      }
+    })
+  }
+
+  return store
 }
