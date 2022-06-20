@@ -45,6 +45,7 @@ export function createRouter(routes, opts = {}) {
     let link = event.target.closest('a')
     if (
       link &&
+      !link.defaultPrevented &&
       event.button === 0 &&
       link.target !== '_blank' &&
       link.dataset.noRouter == null &&
@@ -84,7 +85,7 @@ export function createRouter(routes, opts = {}) {
     onMount(router, () => {
       let page = parse(location.pathname + location.search)
       if (page !== false) set(page)
-      document.body.addEventListener('click', click)
+      if (opts.links !== false) document.body.addEventListener('click', click)
       window.addEventListener('popstate', popstate)
       return () => {
         prev = undefined
@@ -139,7 +140,7 @@ export function redirectPage(router, name, params) {
   router.open(getPagePath(router, name, params), true)
 }
 
-export function createSearchParams() {
+export function createSearchParams(opts = {}) {
   let store = atom({})
 
   let set = store.set
@@ -191,20 +192,13 @@ export function createSearchParams() {
     ) {
       let url = new URL(link.href)
       if (url.origin === location.origin) {
-        event.preventDefault()
-        let changed = location.hash !== url.hash
-
         if (url.search !== prev) {
           prev = url.search
           set(Object.fromEntries(url.searchParams))
         }
-
-        history.pushState(null, null, link.href)
-        if (changed) {
-          location.hash = url.hash
-          if (url.hash === '' || url.hash === '#') {
-            window.dispatchEvent(new HashChangeEvent('hashchange'))
-          }
+        if (url.pathname === location.pathname && url.hash === location.hash) {
+          event.preventDefault()
+          history.pushState(null, null, link.href)
         }
       }
     }
@@ -217,7 +211,7 @@ export function createSearchParams() {
   if (typeof window !== 'undefined' && typeof location !== 'undefined') {
     onMount(store, () => {
       popstate()
-      document.body.addEventListener('click', click)
+      if (opts.links !== false) document.body.addEventListener('click', click)
       window.addEventListener('popstate', popstate)
       return () => {
         document.body.removeEventListener('click', click)

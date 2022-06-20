@@ -3,7 +3,13 @@ import { cleanStores } from 'nanostores'
 import { JSDOM } from 'jsdom'
 import { test } from 'uvu'
 
-import { createRouter, getPagePath, openPage, redirectPage } from '../index.js'
+import {
+  redirectPage,
+  createRouter,
+  getPagePath,
+  openPage,
+  Router
+} from '../index.js'
 
 let dom = new JSDOM('<body></body>', { url: 'http://localhost/' })
 
@@ -17,9 +23,9 @@ global.PopStateEvent = dom.window.PopStateEvent
 global.MouseEvent = dom.window.MouseEvent
 global.HashChangeEvent = dom.window.HashChangeEvent
 
-function listen(): (string | undefined)[] {
+function listen(aRouter: Router = router): (string | undefined)[] {
   let events: (string | undefined)[] = []
-  router.listen(page => {
+  aRouter.listen(page => {
     events.push(page?.path)
   })
   return events
@@ -60,6 +66,8 @@ let router = createRouter<{
   home: '/'
 })
 
+let otherRouter: Router | undefined
+
 test.before(() => {
   document.documentElement.addEventListener('click', e => {
     let link = (e.target as HTMLElement).closest('a')
@@ -70,7 +78,7 @@ test.before(() => {
 })
 
 test.after.each(() => {
-  cleanStores(router)
+  cleanStores(router, otherRouter)
   while (document.body.firstChild) {
     document.body.removeChild(document.body.firstChild)
   }
@@ -215,6 +223,31 @@ test('detects clicks', () => {
     params: {}
   })
   equal(events, ['/posts'])
+})
+
+test('disables clicks detects on request', () => {
+  otherRouter = createRouter<{
+    posts: void
+    home: void
+  }>(
+    {
+      posts: '/posts/',
+      home: '/'
+    },
+    {
+      links: false
+    }
+  )
+  changePath('/')
+  let events = listen(otherRouter)
+
+  createTag(document.body, 'a', { href: '/posts' }).click()
+  equal(router.get(), {
+    path: '/',
+    route: 'home',
+    params: {}
+  })
+  equal(events, [])
 })
 
 test('accepts click on tag inside link', () => {
@@ -457,7 +490,7 @@ test('generates artificial hashchange event for empty hash', () => {
 })
 
 test('uses search query on request', () => {
-  let searchRouter = createRouter(
+  otherRouter = createRouter(
     {
       a: '/p?page=a',
       b: '/p?page=b'
@@ -468,12 +501,9 @@ test('uses search query on request', () => {
   )
 
   changePath('/p?page=a')
-  let events: (string | undefined)[] = []
-  searchRouter.listen(page => {
-    events.push(page?.path)
-  })
+  listen(otherRouter)
 
-  equal(searchRouter.get(), {
+  equal(otherRouter.get(), {
     path: '/p?page=a',
     route: 'a',
     params: {}
@@ -481,14 +511,14 @@ test('uses search query on request', () => {
 
   let link = createTag(document.body, 'a', { href: '/p?page=b' })
   link.click()
-  equal(searchRouter.get(), {
+  equal(otherRouter.get(), {
     path: '/p?page=b',
     route: 'b',
     params: {}
   })
 
   changePath('/p?page=a')
-  equal(searchRouter.get(), {
+  equal(otherRouter.get(), {
     path: '/p?page=a',
     route: 'a',
     params: {}

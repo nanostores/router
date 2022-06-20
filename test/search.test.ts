@@ -3,7 +3,7 @@ import { cleanStores } from 'nanostores'
 import { JSDOM } from 'jsdom'
 import { test } from 'uvu'
 
-import { createSearchParams } from '../index.js'
+import { createSearchParams, SearchParamsStore } from '../index.js'
 
 let dom = new JSDOM('<body></body>', { url: 'http://localhost/' })
 
@@ -17,9 +17,9 @@ global.PopStateEvent = dom.window.PopStateEvent
 global.MouseEvent = dom.window.MouseEvent
 global.HashChangeEvent = dom.window.HashChangeEvent
 
-function listen(): Record<string, string>[] {
+function listen(aStore = store): Record<string, string>[] {
   let events: Record<string, string>[] = []
-  store.listen(params => {
+  aStore.listen(params => {
     events.push(params)
   })
   return events
@@ -46,6 +46,8 @@ function createTag(
 
 let store = createSearchParams()
 
+let otherStore: SearchParamsStore | undefined
+
 test.before(() => {
   document.documentElement.addEventListener('click', e => {
     let link = (e.target as HTMLElement).closest('a')
@@ -56,7 +58,7 @@ test.before(() => {
 })
 
 test.after.each(() => {
-  cleanStores(store)
+  cleanStores(store, otherStore)
   while (document.body.firstChild) {
     document.body.removeChild(document.body.firstChild)
   }
@@ -119,20 +121,30 @@ test('detects clicks', () => {
   changePath('/?a=1')
   let events = listen()
 
-  createTag(document.body, 'a', { href: '/page?a=2' }).click()
+  createTag(document.body, 'a', { href: '/?a=2' }).click()
   equal(store.get(), { a: '2' })
   equal(events, [{ a: '2' }])
-  equal(location.toString(), 'http://localhost/page?a=2')
+  equal(location.toString(), 'http://localhost/?a=2')
+})
+
+test('ignores clicks detection on request', () => {
+  otherStore = createSearchParams({ links: false })
+  changePath('/?a=1')
+  let events = listen(otherStore)
+
+  createTag(document.body, 'a', { href: '/page?a=2' }).click()
+  equal(store.get(), { a: '1' })
+  equal(events, [])
 })
 
 test('accepts click on tag inside link', () => {
   changePath('/')
   listen()
 
-  let link = createTag(document.body, 'a', { href: '/page?a=2' })
+  let link = createTag(document.body, 'a', { href: '/?a=2' })
   createTag(link, 'span').click()
   equal(store.get(), { a: '2' })
-  equal(location.toString(), 'http://localhost/page?a=2')
+  equal(location.toString(), 'http://localhost/?a=2')
 })
 
 test('ignore non-link clicks', () => {
@@ -269,26 +281,7 @@ test('supports link with hash in URL and different path', () => {
   let link = createTag(document.body, 'a', { href: '/posts?a=1#hash' })
   link.click()
 
-  equal(location.toString(), 'http://localhost/posts?a=1#hash')
   equal(events, [])
-})
-
-test('generates artificial hashchange event for empty hash', () => {
-  changePath('/#hash')
-  let events = listen()
-
-  let hashChangeCalled = 0
-  let onHashChange = (): void => {
-    hashChangeCalled += 1
-  }
-  window.addEventListener('hashchange', onHashChange)
-  let link = createTag(document.body, 'a', { href: '/' })
-  link.click()
-
-  window.removeEventListener('hashchange', onHashChange)
-  equal(location.hash, '')
-  equal(events, [])
-  equal(hashChangeCalled, 1)
 })
 
 test.run()

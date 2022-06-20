@@ -32,6 +32,7 @@ export type Page<
 
 export interface RouterOptions {
   search?: boolean
+  links?: boolean
 }
 
 /**
@@ -171,6 +172,10 @@ export function getPagePath<
   ...params: RouteParams<AppPages, PageName>
 ): string
 
+export interface SearchParamsOptions {
+  links?: boolean
+}
+
 /**
  * Store to watch for `?search` URL part changes.
  *
@@ -200,5 +205,9 @@ export interface SearchParamsStore
  *
  * export const searchParams = createSearchParams()
  * ```
+ *
+ * @param opts Options.
  */
-export function createSearchParams(): SearchParamsStore
+export function createSearchParams(
+  opts?: SearchParamsOptions
+): SearchParamsStore
