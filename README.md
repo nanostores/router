@@ -114,6 +114,7 @@ createRouter<Routes>({
 })
 ```
 
+
 ### Search query routing
 
 To use search query like `?a=1&b=2` in routes you need to set `search` option:
@@ -154,6 +155,29 @@ onMount(searchResult, () => {
 
 function changeSearchParam(key: 'sort' | 'filter', value: string) {
   searchParams.set({ ...searchParams.get(), [key]: value })
+}
+```
+
+### Clicks Tracking
+
+By default, router and `?search` params store will add `click` event listener
+on `window` to track links clicks.
+
+You can disable this behavior by `links: false` options and create custom
+`<Link>` component.
+
+```js
+export const router = createRouter({ … }, { links: false })
+
+function onClick (e) {
+  let link = event.target.closest('a')
+  if (isPjax(link, e)) {
+    router.open(new Url(link.href).pathname)
+  }
+}
+
+export const Link = (props) => {
+  return <a onClick={onClick} {...props}></a>
 }
 ```
 
