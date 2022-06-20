@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.5
+* Added `opts.links` to the stores to disable link clicks tracking.
+* Added `defaultPrevented` in router click processing.
+
 ## 0.4
 * Removed Node.js 12 support.
 * Added `createSearchParams()` for `?search` store.
