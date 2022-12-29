@@ -24,7 +24,7 @@ router.subscribe(page => {
   console.log(page.route)
 })
 
-// THROWS category: string; }' is not assignable to parameter
+// THROWS 'category' does not exist in type 'Record<"id", string>'.
 openPage(router, 'post', { id: '1', category: 'guides' })
 // THROWS Expected 2 arguments, but got 3
 openPage(router, 'home', { id: '1' })
@@ -34,7 +34,7 @@ openPage(router, 'create', { id: '1' })
 // THROWS Expected 3 arguments, but got 2.
 openPage(router, 'create')
 
-// THROWS category: string; }' is not assignable to parameter
+// THROWS 'category' does not exist in type 'Record<"id", string>'.
 redirectPage(router, 'post', { id: '1', category: 'guides' })
 // THROWS Expected 2 arguments, but got 3
 redirectPage(router, 'home', { id: '1' })

@@ -141,9 +141,9 @@ export function openPage<
   AppPages extends AppPagesConfig,
   PageName extends keyof AppPages,
 >(
-router: Router<AppPages>,
-name: PageName,
-...params: ParamsArg<AppPages, PageName>
+  router: Router<AppPages>,
+  name: PageName,
+  ...params: ParamsArg<AppPages, PageName>
 ): void;
 
 /**
