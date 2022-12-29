@@ -32,6 +32,13 @@ type ParamsFromRoutesConfig<K extends AppPagesConfig> = {
     : never;
 };
 
+type ParamsArg<
+  AppPages extends AppPagesConfig,
+  PageName extends keyof AppPages
+> = keyof ParamsFromRoutesConfig<AppPages>[PageName] extends never
+  ? []
+  : [ParamsFromRoutesConfig<AppPages>[PageName]]
+
 type Pattern<RouteParams> = Readonly<[RegExp, (...parts: string[]) => RouteParams]>
 
 export type Page<
@@ -120,14 +127,12 @@ export function createRouter<AppPages extends AppPagesConfig>(
  * @param params Route parameters.
  */
 export function openPage<
-AppPages extends AppPagesConfig,
-PageName extends keyof AppPages,
+  AppPages extends AppPagesConfig,
+  PageName extends keyof AppPages,
 >(
 router: Router<AppPages>,
 name: PageName,
-...params: keyof ParamsFromRoutesConfig<AppPages>[PageName] extends never
-  ? []
-  : [ParamsFromRoutesConfig<AppPages>[PageName]]
+...params: ParamsArg<AppPages, PageName>
 ): void;
 
 /**
@@ -150,9 +155,7 @@ export function redirectPage<
 >(
   router: Router<AppPages>,
   name: PageName,
-  ...params: keyof ParamsFromRoutesConfig<AppPages>[PageName] extends never
-    ? []
-    : [ParamsFromRoutesConfig<AppPages>[PageName]]
+  ...params: ParamsArg<AppPages, PageName>
 ): void;
 
 
@@ -171,12 +174,11 @@ export function redirectPage<
  */
 export function getPagePath<
   AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages,
-  Params=ParamsFromRoutesConfig<AppPages>[PageName],
+  PageName extends keyof AppPages
 >(
   router: Router<AppPages>,
   name: PageName,
-  ...params: [Params]
+  ...params: ParamsArg<AppPages, PageName>
 ): string
 
 export interface SearchParamsOptions {
