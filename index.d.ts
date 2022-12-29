@@ -11,14 +11,17 @@ type Split<S extends string, D extends string> = string extends S
 
 // Converting path array to object
 type PathToParams<PathArray, Params = {}> = PathArray extends [
-  infer First,
-  ...infer Rest
-]
-  ? First extends `:${infer Param}`
-    ? PathToParams<Rest, Params & Record<Param, string>>
-    : PathToParams<Rest, Params>
-  : Params;
-
+    infer First,
+    ...infer Rest,
+  ]
+    ? First extends `:${infer Param}`
+      ? // eslint-disable-next-line @typescript-eslint/no-shadow
+        First extends `:${infer Param}?`
+        ? PathToParams<Rest, Params & Partial<Record<Param, string>>>
+        : PathToParams<Rest, Params & Record<Param, string>>
+      : PathToParams<Rest, Params>
+    : Params;
+  
 type ParseUrl<Path extends string> = PathToParams<Split<Path, "/">>;
 
 type AppPagesConfig = Record<string, string | Pattern<any>>;
@@ -32,12 +35,20 @@ type ParamsFromRoutesConfig<K extends AppPagesConfig> = {
     : never;
 };
 
+type MappedC<A, B> = {
+    [K in keyof A & keyof B]: A[K] extends B[K] ? never : K;
+  };
+type OptionalKeys<T> = MappedC<T, Required<T>>[keyof T];  
 type ParamsArg<
   AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages
+  PageName extends keyof AppPages,
 > = keyof ParamsFromRoutesConfig<AppPages>[PageName] extends never
   ? []
-  : [ParamsFromRoutesConfig<AppPages>[PageName]]
+  : keyof ParamsFromRoutesConfig<AppPages>[PageName] extends OptionalKeys<
+      ParamsFromRoutesConfig<AppPages>[PageName]
+    >
+  ? [ParamsFromRoutesConfig<AppPages>[PageName]?]
+  : [ParamsFromRoutesConfig<AppPages>[PageName]];
 
 type Pattern<RouteParams> = Readonly<[RegExp, (...parts: string[]) => RouteParams]>
 
