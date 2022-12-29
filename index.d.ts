@@ -1,32 +1,47 @@
 import { ReadableAtom } from 'nanostores'
 
-type Params<Names extends string> = {
-  [name in Names]: string
-}
+// Splitting string by delimiter
+type Split<S extends string, D extends string> = string extends S
+  ? string[]
+  : S extends ""
+  ? []
+  : S extends `${infer T}${D}${infer U}`
+  ? [T, ...Split<U, D>]
+  : [S];
 
-interface Pages {
-  [name: string]: any
-}
+// Converting path array to object
+type PathToParams<PathArray, Params = {}> = PathArray extends [
+  infer First,
+  ...infer Rest
+]
+  ? First extends `:${infer Param}`
+    ? PathToParams<Rest, Params & Record<Param, string>>
+    : PathToParams<Rest, Params>
+  : Params;
 
-type Pattern<RouteParams> = [RegExp, (...parts: string[]) => RouteParams]
+type ParseUrl<Path extends string> = PathToParams<Split<Path, "/">>;
 
-type Routes<AppPages extends Pages> = {
-  [name in keyof AppPages]: string | Pattern<Params<AppPages[name]>>
-}
+type AppPagesConfig = Record<string, string | Pattern<any>>;
 
-export type RouteParams<
-  AppPages extends Pages,
-  PageName extends keyof AppPages
-> = AppPages[PageName] extends void ? [] : [Params<AppPages[PageName]>]
+// Converting routes to params
+type ParamsFromRoutesConfig<K extends AppPagesConfig> = {
+  [key in keyof K]: K[key] extends Pattern<infer P>
+    ? P
+    : K[key] extends string
+    ? ParseUrl<K[key]>
+    : never;
+};
+
+type Pattern<RouteParams> = Readonly<[RegExp, (...parts: string[]) => RouteParams]>
 
 export type Page<
-  AppPages extends Pages = Pages,
+  AppPages extends AppPagesConfig = AppPagesConfig,
   PageName extends keyof AppPages = any
 > = PageName extends any
   ? {
       path: string
       route: PageName
-      params: Params<AppPages[PageName]>
+      params: ParamsFromRoutesConfig<AppPages>[PageName]
     }
   : never
 
@@ -40,24 +55,17 @@ export interface RouterOptions {
  *
  * It is a simple router without callbacks. Think about it as a URL parser.
  *
- * ```js
+ * ```ts
  * import { createRouter } from 'nanostores'
  *
- * // Types for TypeScript
- * interface Routes {
- *   home: void
- *   category: 'categoryId'
- *   post: 'categoryId' | 'id'
- * }
- *
- * export const router = createRouter<Routes>({
+ * export const router = createRouter({
  *   home: '/',
  *   category: '/posts/:categoryId',
  *   post: '/posts/:categoryId/:id'
- * })
+ * } as const)
  * ```
  */
-export interface Router<AppPages extends Pages = Pages>
+export interface Router<AppPages extends AppPagesConfig = AppPagesConfig>
   extends ReadableAtom<Page<AppPages, keyof AppPages> | undefined> {
   /**
    * Converted routes.
@@ -81,28 +89,21 @@ export interface Router<AppPages extends Pages = Pages>
 /**
  * Create {@link Router} store.
  *
- * ```js
+ * ```ts
  * import { createRouter } from 'nanostores'
  *
- * // Types for TypeScript
- * interface Routes {
- *   home: void
- *   category: 'categoryId'
- *   post: 'categoryId' | 'id'
- * }
- *
- * export const router = createRouter<Routes>({
+ * export const router = createRouter({
  *   home: '/',
  *   category: '/posts/:categoryId',
  *   post: '/posts/:categoryId/:id'
- * })
+ * } as const)
  * ```
  *
  * @param routes URL patterns.
  * @param opts Options.
  */
-export function createRouter<AppPages extends Pages>(
-  routes: Routes<AppPages>,
+export function createRouter<AppPages extends AppPagesConfig>(
+  routes: AppPages,
   opts?: RouterOptions
 ): Router<AppPages>
 
@@ -119,13 +120,15 @@ export function createRouter<AppPages extends Pages>(
  * @param params Route parameters.
  */
 export function openPage<
-  AppPages extends Pages,
-  PageName extends keyof AppPages
+AppPages extends AppPagesConfig,
+PageName extends keyof AppPages,
 >(
-  router: Router<AppPages>,
-  name: PageName,
-  ...params: AppPages[PageName] extends void ? [] : [Params<AppPages[PageName]>]
-): void
+router: Router<AppPages>,
+name: PageName,
+...params: keyof ParamsFromRoutesConfig<AppPages>[PageName] extends never
+  ? []
+  : [ParamsFromRoutesConfig<AppPages>[PageName]]
+): void;
 
 /**
  * Open page by name and parameters. Replaces recent state in history.
@@ -142,13 +145,16 @@ export function openPage<
  * @param params Route parameters.
  */
 export function redirectPage<
-  AppPages extends Pages,
-  PageName extends keyof AppPages
+  AppPages extends AppPagesConfig,
+  PageName extends keyof AppPages,
 >(
   router: Router<AppPages>,
   name: PageName,
-  ...params: AppPages[PageName] extends void ? [] : [Params<AppPages[PageName]>]
-): void
+  ...params: keyof ParamsFromRoutesConfig<AppPages>[PageName] extends never
+    ? []
+    : [ParamsFromRoutesConfig<AppPages>[PageName]]
+): void;
+
 
 /**
  * Generates pathname by name and parameters. Useful to render links.
@@ -164,12 +170,13 @@ export function redirectPage<
  * @param params Route parameters.
  */
 export function getPagePath<
-  AppPages extends Pages,
-  PageName extends keyof AppPages
+  AppPages extends AppPagesConfig,
+  PageName extends keyof AppPages,
+  Params=ParamsFromRoutesConfig<AppPages>[PageName],
 >(
   router: Router<AppPages>,
   name: PageName,
-  ...params: RouteParams<AppPages, PageName>
+  ...params: [Params]
 ): string
 
 export interface SearchParamsOptions {

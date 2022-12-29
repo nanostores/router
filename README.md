@@ -19,18 +19,11 @@ not a component in UI framework like React.
 // stores/router.ts
 import { createRouter } from '@nanostores/router'
 
-// Types for :params in route templates
-interface Routes {
-  home: void
-  category: 'categoryId'
-  post: 'categoryId' | 'id'
-}
-
-export const router = createRouter<Routes>({
+export const router = createRouter({
   home: '/',
   category: '/posts/:categoryId',
   post: '/posts/:categoryId/:id'
-})
+} as const)
 ```
 
 Store in active mode listen for `<a>` clicks on `document.body` and Back button
@@ -102,16 +95,21 @@ createRouter({
 Routes can have RegExp patterns. They should be an array with function,
 which convert `()` groups to key-value map.
 
-For TypeScript, you need specify interface with variable names, used in routes.
+For TypeScript, you only need to make a readable routes config with `as const`. Router parameters will be inferred automatically.
 
 ```ts
-interface Routes {
-  routeName: 'var1' | 'var2'
-}
+createRouter({
+  routeName: '/path/:var1/and/:var2',
+  routeName2: [/path2/, () => ({ num: 1, str: '' })]
+} as const)
 
-createRouter<Routes>({
-  routeName: '/path/:var1/and/:var2'
-})
+/**
+ * Params will be inferred as:
+ * {
+ *   routeName: { var1: string, var2: string },
+ *   routeName2: { num: number, str: string }
+ * }
+ */
 ```
 
 

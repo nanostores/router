@@ -1,18 +1,11 @@
 import { createRouter, openPage, redirectPage } from '../index.js'
 
-interface Routes {
-  home: void
-  create: 'type' | 'mode'
-  post: 'id'
-  exit: void
-}
-
-let router = createRouter<Routes>({
+let router = createRouter({
   home: '/',
   create: [/\/post\/(new|draft)/, type => ({ type, mode: 'editor' })],
   post: '/post/:id',
   exit: '/exit'
-})
+} as const)
 
 router.subscribe(page => {
   if (!page) {
