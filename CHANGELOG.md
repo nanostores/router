@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8
+* Added routes params automatic inferring (by Daniil Kozlov).
+
 ## 0.7
 * Moved to Nano Stores 0.6.
 
