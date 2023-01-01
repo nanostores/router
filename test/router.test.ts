@@ -23,7 +23,7 @@ global.PopStateEvent = dom.window.PopStateEvent
 global.MouseEvent = dom.window.MouseEvent
 global.HashChangeEvent = dom.window.HashChangeEvent
 
-function listen(aRouter: Router = router): (string | undefined)[] {
+function listen(aRouter: Router<any> = router): (string | undefined)[] {
   let events: (string | undefined)[] = []
   aRouter.listen(page => {
     events.push(page?.path)
@@ -50,23 +50,16 @@ function createTag(
   return el
 }
 
-let router = createRouter<{
-  optional: 'id' | 'tab'
-  secret: 'id'
-  posts: void
-  draft: 'type' | 'id'
-  post: 'categoryId' | 'id'
-  home: void
-}>({
+let router = createRouter({
   optional: '/profile/:id?/:tab?',
   secret: '/[secret]/:id',
   posts: '/posts/',
   draft: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ type, id })],
   post: '/posts/:categoryId/:id',
   home: '/'
-})
+} as const)
 
-let otherRouter: Router | undefined
+let otherRouter: Router<any> | undefined
 
 test.before(() => {
   document.documentElement.addEventListener('click', e => {
@@ -226,14 +219,11 @@ test('detects clicks', () => {
 })
 
 test('disables clicks detects on request', () => {
-  otherRouter = createRouter<{
-    posts: void
-    home: void
-  }>(
+  otherRouter = createRouter(
     {
       posts: '/posts/',
       home: '/'
-    },
+    } as const,
     {
       links: false
     }

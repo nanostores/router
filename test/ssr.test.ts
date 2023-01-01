@@ -4,13 +4,10 @@ import { test } from 'uvu'
 
 import { createRouter, createSearchParams } from '../index.js'
 
-let router = createRouter<{
-  posts: void
-  home: void
-}>({
+let router = createRouter({
   posts: '/posts/',
   home: '/'
-})
+} as const)
 
 let params = createSearchParams()
 
