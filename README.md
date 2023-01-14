@@ -22,7 +22,7 @@ import { createRouter } from '@nanostores/router'
 export const router = createRouter({
   home: '/',
   category: '/posts/:categoryId',
-  post: '/posts/:categoryId/:id'
+  post: '/posts/:categoryId/:postId'
 } as const)
 ```
 
