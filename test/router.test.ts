@@ -384,6 +384,7 @@ test('generates URLs', () => {
     getPagePath(router, 'optional', { id: '10', tab: 'a#b' }),
     '/profile/10/a%23b'
   )
+  equal(getPagePath(router, 'optional'), '/profile')
 })
 
 test('opens URLs manually by route name, pushing new stare', () => {
