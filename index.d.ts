@@ -3,28 +3,28 @@ import { ReadableAtom } from 'nanostores'
 // Splitting string by delimiter
 type Split<S extends string, D extends string> = string extends S
   ? string[]
-  : S extends ""
+  : S extends ''
   ? []
   : S extends `${infer T}${D}${infer U}`
   ? [T, ...Split<U, D>]
-  : [S];
+  : [S]
 
 // Converting path array to object
 type PathToParams<PathArray, Params = {}> = PathArray extends [
-    infer First,
-    ...infer Rest,
-  ]
-    ? First extends `:${infer Param}`
-      ? // eslint-disable-next-line @typescript-eslint/no-shadow
-        First extends `:${infer Param}?`
-        ? PathToParams<Rest, Params & Partial<Record<Param, string>>>
-        : PathToParams<Rest, Params & Record<Param, string>>
-      : PathToParams<Rest, Params>
-    : Params;
-  
-type ParseUrl<Path extends string> = PathToParams<Split<Path, "/">>;
+  infer First,
+  ...infer Rest
+]
+  ? First extends `:${infer Param}`
+    ? // eslint-disable-next-line @typescript-eslint/no-shadow
+      First extends `:${infer Param}?`
+      ? PathToParams<Rest, Params & Partial<Record<Param, string>>>
+      : PathToParams<Rest, Params & Record<Param, string>>
+    : PathToParams<Rest, Params>
+  : Params
 
-type AppPagesConfig = Record<string, string | Pattern<any>>;
+type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>>
+
+type AppPagesConfig = Record<string, string | Pattern<any>>
 
 // Converting routes to params
 type ParamsFromRoutesConfig<K extends AppPagesConfig> = {
@@ -32,25 +32,27 @@ type ParamsFromRoutesConfig<K extends AppPagesConfig> = {
     ? P
     : K[key] extends string
     ? ParseUrl<K[key]>
-    : never;
-};
+    : never
+}
 
 type MappedC<A, B> = {
-    [K in keyof A & keyof B]: A[K] extends B[K] ? never : K;
-  };
-type OptionalKeys<T> = MappedC<T, Required<T>>[keyof T];  
+  [K in keyof A & keyof B]: A[K] extends B[K] ? never : K
+}
+type OptionalKeys<T> = MappedC<T, Required<T>>[keyof T]
 type ParamsArg<
   AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages,
+  PageName extends keyof AppPages
 > = keyof ParamsFromRoutesConfig<AppPages>[PageName] extends never
   ? []
   : keyof ParamsFromRoutesConfig<AppPages>[PageName] extends OptionalKeys<
       ParamsFromRoutesConfig<AppPages>[PageName]
     >
   ? [ParamsFromRoutesConfig<AppPages>[PageName]?]
-  : [ParamsFromRoutesConfig<AppPages>[PageName]];
+  : [ParamsFromRoutesConfig<AppPages>[PageName]]
 
-type Pattern<RouteParams> = Readonly<[RegExp, (...parts: string[]) => RouteParams]>
+type Pattern<RouteParams> = Readonly<
+  [RegExp, (...parts: string[]) => RouteParams]
+>
 
 export type Page<
   AppPages extends AppPagesConfig = AppPagesConfig,
@@ -139,12 +141,12 @@ export function createRouter<AppPages extends AppPagesConfig>(
  */
 export function openPage<
   AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages,
+  PageName extends keyof AppPages
 >(
   router: Router<AppPages>,
   name: PageName,
   ...params: ParamsArg<AppPages, PageName>
-): void;
+): void
 
 /**
  * Open page by name and parameters. Replaces recent state in history.
@@ -162,13 +164,12 @@ export function openPage<
  */
 export function redirectPage<
   AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages,
+  PageName extends keyof AppPages
 >(
   router: Router<AppPages>,
   name: PageName,
   ...params: ParamsArg<AppPages, PageName>
-): void;
-
+): void
 
 /**
  * Generates pathname by name and parameters. Useful to render links.
