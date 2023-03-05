@@ -24,10 +24,16 @@ type PathToParams<PathArray, Params = {}> = PathArray extends [
 
 type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>>
 
-type AppPagesConfig = Record<string, string | Pattern<any>>
+export type RouterConfig = Record<string, string | Pattern<any>>
+
+export type ConfigFromRouter<SomeRouter> = SomeRouter extends Router<
+  infer Config
+>
+  ? Config
+  : never
 
 // Converting routes to params
-type ParamsFromRoutesConfig<K extends AppPagesConfig> = {
+type ParamsFromConfig<K extends RouterConfig> = {
   [key in keyof K]: K[key] extends Pattern<infer P>
     ? P
     : K[key] extends string
@@ -39,29 +45,30 @@ type MappedC<A, B> = {
   [K in keyof A & keyof B]: A[K] extends B[K] ? never : K
 }
 type OptionalKeys<T> = MappedC<T, Required<T>>[keyof T]
-type ParamsArg<
-  AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages
-> = keyof ParamsFromRoutesConfig<AppPages>[PageName] extends never
+
+export type ParamsArg<
+  Config extends RouterConfig,
+  PageName extends keyof Config
+> = keyof ParamsFromConfig<Config>[PageName] extends never
   ? []
-  : keyof ParamsFromRoutesConfig<AppPages>[PageName] extends OptionalKeys<
-      ParamsFromRoutesConfig<AppPages>[PageName]
+  : keyof ParamsFromConfig<Config>[PageName] extends OptionalKeys<
+      ParamsFromConfig<Config>[PageName]
     >
-  ? [ParamsFromRoutesConfig<AppPages>[PageName]?]
-  : [ParamsFromRoutesConfig<AppPages>[PageName]]
+  ? [ParamsFromConfig<Config>[PageName]?]
+  : [ParamsFromConfig<Config>[PageName]]
 
 type Pattern<RouteParams> = Readonly<
   [RegExp, (...parts: string[]) => RouteParams]
 >
 
 export type Page<
-  AppPages extends AppPagesConfig = AppPagesConfig,
-  PageName extends keyof AppPages = any
+  Config extends RouterConfig = RouterConfig,
+  PageName extends keyof Config = any
 > = PageName extends any
   ? {
       path: string
       route: PageName
-      params: ParamsFromRoutesConfig<AppPages>[PageName]
+      params: ParamsFromConfig<Config>[PageName]
     }
   : never
 
@@ -85,8 +92,8 @@ export interface RouterOptions {
  * } as const)
  * ```
  */
-export interface Router<AppPages extends AppPagesConfig = AppPagesConfig>
-  extends ReadableAtom<Page<AppPages, keyof AppPages> | undefined> {
+export interface Router<Config extends RouterConfig = RouterConfig>
+  extends ReadableAtom<Page<Config, keyof Config> | undefined> {
   /**
    * Converted routes.
    */
@@ -122,10 +129,10 @@ export interface Router<AppPages extends AppPagesConfig = AppPagesConfig>
  * @param routes URL patterns.
  * @param opts Options.
  */
-export function createRouter<AppPages extends AppPagesConfig>(
-  routes: AppPages,
+export function createRouter<Config extends RouterConfig>(
+  routes: Config,
   opts?: RouterOptions
-): Router<AppPages>
+): Router<Config>
 
 /**
  * Open page by name and parameters. Pushes new state into history.
@@ -140,12 +147,12 @@ export function createRouter<AppPages extends AppPagesConfig>(
  * @param params Route parameters.
  */
 export function openPage<
-  AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages
+  Config extends RouterConfig,
+  PageName extends keyof Config
 >(
-  router: Router<AppPages>,
+  router: Router<Config>,
   name: PageName,
-  ...params: ParamsArg<AppPages, PageName>
+  ...params: ParamsArg<Config, PageName>
 ): void
 
 /**
@@ -163,12 +170,12 @@ export function openPage<
  * @param params Route parameters.
  */
 export function redirectPage<
-  AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages
+  Config extends RouterConfig,
+  PageName extends keyof Config
 >(
-  router: Router<AppPages>,
+  router: Router<Config>,
   name: PageName,
-  ...params: ParamsArg<AppPages, PageName>
+  ...params: ParamsArg<Config, PageName>
 ): void
 
 /**
@@ -185,12 +192,12 @@ export function redirectPage<
  * @param params Route parameters.
  */
 export function getPagePath<
-  AppPages extends AppPagesConfig,
-  PageName extends keyof AppPages
+  Config extends RouterConfig,
+  PageName extends keyof Config
 >(
-  router: Router<AppPages>,
+  router: Router<Config>,
   name: PageName,
-  ...params: ParamsArg<AppPages, PageName>
+  ...params: ParamsArg<Config, PageName>
 ): string
 
 export interface SearchParamsOptions {
