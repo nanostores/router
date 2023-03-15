@@ -152,14 +152,14 @@ export function openPage<
 >(
   router: Router<Config>,
   name: PageName,
-  ...params: ParamsArg<Config, PageName>
+  params?: ParamsArg<Config, PageName>
 ): void
 
 /**
  * Open page by name and parameters. Replaces recent state in history.
  *
  * ```js
- * import { redirectPage } from '@logux/state'
+ * import { redirectPage } from 'nanostores'
  *
  * openPage(router, 'login')
  * // replace login route, so we don't face it on back navigation
@@ -175,7 +175,7 @@ export function redirectPage<
 >(
   router: Router<Config>,
   name: PageName,
-  ...params: ParamsArg<Config, PageName>
+  params?: ParamsArg<Config, PageName>
 ): void
 
 /**
@@ -197,7 +197,7 @@ export function getPagePath<
 >(
   router: Router<Config>,
   name: PageName,
-  ...params: ParamsArg<Config, PageName>
+  params?: ParamsArg<Config, PageName>
 ): string
 
 export interface SearchParamsOptions {
