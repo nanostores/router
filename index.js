@@ -29,7 +29,7 @@ export function createRouter(routes, opts = {}) {
   let prev
   let parse = path => {
     if (!opts.search) path = path.split('?')[0]
-    path = path.replace(/\/($|\?)/, '') || '/'
+    path = path.replace(/\/($|\?)/, '$1') || '/'
     if (prev === path) return false
     prev = path
 

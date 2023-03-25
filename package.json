@@ -1,7 +1,7 @@
 {
   "name": "@nanostores/router",
   "version": "0.8.2",
-  "description": "A tiny (835 bytes) router for Nano Stores state manager",
+  "description": "A tiny (838 bytes) router for Nano Stores state manager",
   "keywords": [
     "nano",
     "router",
@@ -86,7 +86,7 @@
       "import": {
         "./index.js": "{ createRouter }"
       },
-      "limit": "835 B"
+      "limit": "838 B"
     },
     {
       "name": "Search Params",

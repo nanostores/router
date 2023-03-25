@@ -514,6 +514,13 @@ test('uses search query on request', () => {
     route: 'a',
     params: {}
   })
+
+  changePath('/p/?page=b')
+  equal(otherRouter.get(), {
+    path: '/p?page=b',
+    route: 'b',
+    params: {}
+  })
 })
 
 test.run()
