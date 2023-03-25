@@ -5,7 +5,7 @@ let router = createRouter({
   create: [/\/post\/(new|draft)/, type => ({ mode: 'editor', id: 123 })],
   post: '/post/:id',
   exit: '/exit'
-} as const)
+})
 
 router.subscribe(page => {
   if (!page) {

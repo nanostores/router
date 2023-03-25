@@ -23,7 +23,7 @@ export const router = createRouter({
   home: '/',
   category: '/posts/:categoryId',
   post: '/posts/:categoryId/:postId'
-} as const)
+}
 ```
 
 Store in active mode listen for `<a>` clicks on `document.body` and Back button
@@ -80,7 +80,7 @@ createRouter({
   route1: '/',
   route2: '/path/:var1/and/:var2',
   route3: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ type, id })]
-} as const)
+})
 ```
 
 For string patterns you can use `:name` for variable parts. To make the
@@ -89,20 +89,20 @@ parameter optional, mark it with the `?` modifier:
 ```ts
 createRouter({
   routeName: '/profile/:id?/:tab?'
-} as const)
+})
 ```
 
 Routes can have RegExp patterns. They should be an array with function,
 which convert `()` groups to key-value map.
 
-For TypeScript, you only need to make a readable routes config with `as const`.
-Router parameters will be inferred automatically.
+For TypeScript, router parameters will be converted to types automatically.
+You need to use TypeScript ≥5.x.
 
 ```ts
 createRouter({
   routeName: '/path/:var1/and/:var2',
   routeName2: [/path2/, () => ({ num: 1, str: '' })]
-} as const)
+})
 
 /**
  * Params will be inferred as:
@@ -121,7 +121,7 @@ To use search query like `?a=1&b=2` in routes you need to set `search` option:
 ```js
 createRouter({
   home: '/p/?page=home'
-} as const, {
+}, {
   search: true
 })
 ```
