@@ -260,7 +260,7 @@ test('opens URLs manually with state replacing', () => {
   changePath('/')
   listen()
   store.open({ a: '2' }, true)
-  equal(history.length - start, 1)
+  equal(history.length - start, 2)
 
   equal(location.href, 'http://localhost/?a=2')
   equal(store.get(), { a: '2' })

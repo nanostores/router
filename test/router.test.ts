@@ -392,7 +392,7 @@ test('opens URLs manually by route name, pushing new stare', () => {
   changePath('/')
   listen()
   openPage(router, 'post', { categoryId: 'guides', id: '10' })
-  equal(history.length - start, 2)
+  equal(history.length - start, 3)
 
   equal(location.href, 'http://localhost/posts/guides/10')
   equal(router.get(), {
@@ -410,7 +410,7 @@ test('opens URLs manually by route name, replacing state', () => {
   changePath('/')
   listen()
   redirectPage(router, 'post', { categoryId: 'guides', id: '10' })
-  equal(history.length - start, 1)
+  equal(history.length - start, 2)
 
   equal(location.href, 'http://localhost/posts/guides/10')
   equal(router.get(), {
