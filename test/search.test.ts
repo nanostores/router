@@ -1,5 +1,5 @@
-import { equal } from 'uvu/assert'
 import { cleanStores } from 'nanostores'
+import { equal } from 'uvu/assert'
 import { JSDOM } from 'jsdom'
 import { test } from 'uvu'
 
