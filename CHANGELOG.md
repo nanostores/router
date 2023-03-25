@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.3
+* Fixed URL normalization on `search` option.
+
 ## 0.8.2
 * Added `ParamsArg`, `RouterConfig`, `ParamsFromRoutesConfig` types export.
 
