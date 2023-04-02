@@ -523,4 +523,22 @@ test('uses search query on request', () => {
   })
 })
 
+test('supports dot in URL', () => {
+  otherRouter = createRouter({
+    text: '/page.txt'
+  })
+
+  changePath('/page.txt')
+  listen(otherRouter)
+
+  equal(otherRouter.get(), {
+    path: '/page.txt',
+    route: 'text',
+    params: {}
+  })
+
+  changePath('/page.html')
+  equal(otherRouter.get(), undefined)
+})
+
 test.run()
