@@ -6,7 +6,7 @@ let router = createRouter({
   post: '/post/:id',
   profile: '/user/:userId?',
   exit: '/exit'
-} as const)
+})
 
 router.subscribe(page => {
   if (!page) {

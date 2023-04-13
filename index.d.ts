@@ -129,7 +129,7 @@ export interface Router<Config extends RouterConfig = RouterConfig>
  * @param routes URL patterns.
  * @param opts Options.
  */
-export function createRouter<Config extends RouterConfig>(
+export function createRouter<const Config extends RouterConfig>(
   routes: Config,
   opts?: RouterOptions
 ): Router<Config>
