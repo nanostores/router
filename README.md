@@ -23,7 +23,7 @@ export const router = createRouter({
   home: '/',
   category: '/posts/:categoryId',
   post: '/posts/:categoryId/:postId'
-}
+})
 ```
 
 Store in active mode listen for `<a>` clicks on `document.body` and Back button
