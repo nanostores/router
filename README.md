@@ -153,7 +153,7 @@ onMount(searchResult, () => {
 })
 
 function changeSearchParam(key: 'sort' | 'filter', value: string) {
-  searchParams.set({ ...searchParams.get(), [key]: value })
+  searchParams.open({ ...searchParams.get(), [key]: value })
 }
 ```
 
