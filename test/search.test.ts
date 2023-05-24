@@ -1,9 +1,11 @@
+import type { SearchParamsStore } from '../index.js'
+
 import { cleanStores } from 'nanostores'
 import { equal } from 'uvu/assert'
 import { JSDOM } from 'jsdom'
 import { test } from 'uvu'
 
-import { createSearchParams, SearchParamsStore } from '../index.js'
+import { createSearchParams } from '../index.js'
 
 let dom = new JSDOM('<body></body>', { url: 'http://localhost/' })
 

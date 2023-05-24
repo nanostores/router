@@ -1,15 +1,11 @@
+import type { Router } from '../index.js'
+
 import { equal, is, throws } from 'uvu/assert'
 import { cleanStores } from 'nanostores'
 import { JSDOM } from 'jsdom'
 import { test } from 'uvu'
 
-import {
-  redirectPage,
-  createRouter,
-  getPagePath,
-  openPage,
-  Router
-} from '../index.js'
+import { redirectPage, createRouter, getPagePath, openPage } from '../index.js'
 
 let dom = new JSDOM('<body></body>', { url: 'http://localhost/' })
 

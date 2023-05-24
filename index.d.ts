@@ -1,4 +1,4 @@
-import { ReadableAtom } from 'nanostores'
+import type { ReadableAtom } from 'nanostores'
 
 // Splitting string by delimiter
 type Split<S extends string, D extends string> = string extends S
