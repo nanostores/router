@@ -50,8 +50,8 @@ devDependencies:
     specifier: ^22.0.0
     version: 22.0.0
   nanostores:
-    specifier: ^0.8.1
-    version: 0.8.1
+    specifier: ^0.9.0
+    version: 0.9.0
   size-limit:
     specifier: ^8.2.4
     version: 8.2.4
@@ -2181,9 +2181,9 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /nanostores@0.8.1:
-    resolution: {integrity: sha512-1ZCfQtII2XeFDrtqXL2cdQ/diGrLxzRB3YMyQjn8m7GSGQrJfGST2iuqMpWnS/ZlifhtjgR/SX0Jy6Uij6lRLA==}
-    engines: {node: ^16.0.0 || >=18.0.0}
+  /nanostores@0.9.0:
+    resolution: {integrity: sha512-6s1zA8JZbvMo/sLtcLCeNSlznMEG2RVpDGxi9gsdD0eip7YflxrGJC0ZkX67EFpHagtXpY5Na7jX5xOSOHk+Jw==}
+    engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     dev: true
 
   /natural-compare-lite@1.4.0:
