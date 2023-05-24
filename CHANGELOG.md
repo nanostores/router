@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.10
+* Moved to Nano Stores 0.9.
+
 ## 0.9.1
 * Added funding to package meta.
 
