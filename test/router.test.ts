@@ -1,11 +1,9 @@
-import type { Router } from '../index.js'
-
-import { equal, is, throws } from 'uvu/assert'
-import { cleanStores } from 'nanostores'
 import { JSDOM } from 'jsdom'
+import { cleanStores } from 'nanostores'
 import { test } from 'uvu'
+import { equal, is, throws } from 'uvu/assert'
 
-import { redirectPage, createRouter, getPagePath, openPage } from '../index.js'
+import { createRouter, getPagePath, openPage, redirectPage, type Router } from '../index.js'
 
 let dom = new JSDOM('<body></body>', { url: 'http://localhost/' })
 
@@ -47,12 +45,12 @@ function createTag(
 }
 
 let router = createRouter({
+  draft: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ id, type })],
+  home: '/',
   optional: '/profile/:id?/:tab?',
-  secret: '/[secret]/:id',
-  posts: '/posts/',
-  draft: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ type, id })],
   post: '/posts/:categoryId/:id',
-  home: '/'
+  posts: '/posts/',
+  secret: '/[secret]/:id'
 } as const)
 
 let otherRouter: Router<any> | undefined
@@ -76,24 +74,24 @@ test.after.each(() => {
 test('parses current location', () => {
   changePath('/posts/guides/10')
   equal(router.get(), {
-    path: '/posts/guides/10',
-    route: 'post',
     params: {
       categoryId: 'guides',
       id: '10'
-    }
+    },
+    path: '/posts/guides/10',
+    route: 'post'
   })
 })
 
 test('ignores last slash', () => {
   changePath('/posts/guides/10/')
   equal(router.get(), {
-    path: '/posts/guides/10',
-    route: 'post',
     params: {
       categoryId: 'guides',
       id: '10'
-    }
+    },
+    path: '/posts/guides/10',
+    route: 'post'
   })
 })
 
@@ -105,73 +103,73 @@ test('processes 404', () => {
 test('escapes RegExp symbols in routes', () => {
   changePath('/[secret]/9')
   equal(router.get(), {
-    path: '/[secret]/9',
-    route: 'secret',
     params: {
       id: '9'
-    }
+    },
+    path: '/[secret]/9',
+    route: 'secret'
   })
 })
 
 test('converts URL-encoded symbols', () => {
   changePath('/posts/a%23b/10')
   equal(router.get(), {
-    path: '/posts/a%23b/10',
-    route: 'post',
     params: {
       categoryId: 'a#b',
       id: '10'
-    }
+    },
+    path: '/posts/a%23b/10',
+    route: 'post'
   })
 })
 
 test('ignores hash and search', () => {
   changePath('/posts/?id=1#top')
   equal(router.get(), {
+    params: {},
     path: '/posts',
-    route: 'posts',
-    params: {}
+    route: 'posts'
   })
 })
 
 test('ignores case', () => {
   changePath('/POSTS')
   equal(router.get(), {
+    params: {},
     path: '/POSTS',
-    route: 'posts',
-    params: {}
+    route: 'posts'
   })
 })
 
 test('parameters can be optional', () => {
   changePath('/profile/')
   equal(router.get(), {
-    path: '/profile',
-    route: 'optional',
     params: {
       id: '',
       tab: ''
-    }
+    },
+    path: '/profile',
+    route: 'optional'
   })
 
   changePath('/profile/10/')
   equal(router.get(), {
-    path: '/profile/10',
-    route: 'optional',
     params: {
       id: '10',
       tab: ''
-    }
+    },
+    path: '/profile/10',
+    route: 'optional'
   })
 
   changePath('/profile/10/contacts')
   equal(router.get(), {
-    path: '/profile/10/contacts',
-    route: 'optional',
     params: {
       id: '10',
       tab: 'contacts'
-    }
+    },
+    path: '/profile/10/contacts',
+    route: 'optional'
   })
 })
 
@@ -180,7 +178,7 @@ test('detects URL changes', () => {
   let events = listen()
 
   changePath('/')
-  equal(router.get(), { path: '/', route: 'home', params: {} })
+  equal(router.get(), { params: {}, path: '/', route: 'home' })
   equal(events, ['/'])
 })
 
@@ -207,9 +205,9 @@ test('detects clicks', () => {
 
   createTag(document.body, 'a', { href: '/posts' }).click()
   equal(router.get(), {
+    params: {},
     path: '/posts',
-    route: 'posts',
-    params: {}
+    route: 'posts'
   })
   equal(events, ['/posts'])
 })
@@ -217,8 +215,8 @@ test('detects clicks', () => {
 test('disables clicks detects on request', () => {
   otherRouter = createRouter(
     {
-      posts: '/posts/',
-      home: '/'
+      home: '/',
+      posts: '/posts/'
     } as const,
     {
       links: false
@@ -229,9 +227,9 @@ test('disables clicks detects on request', () => {
 
   createTag(document.body, 'a', { href: '/posts' }).click()
   equal(router.get(), {
+    params: {},
     path: '/',
-    route: 'home',
-    params: {}
+    route: 'home'
   })
   equal(events, [])
 })
@@ -325,8 +323,8 @@ test('respects download attribute', () => {
   listen()
 
   let link = createTag(document.body, 'a', {
-    href: '/posts',
-    download: 'a.txt'
+    download: 'a.txt',
+    href: '/posts'
   })
   link.click()
 
@@ -340,9 +338,9 @@ test('opens URLs manually', () => {
   router.open('/posts/')
   equal(location.href, 'http://localhost/posts/')
   equal(router.get(), {
+    params: {},
     path: '/posts',
-    route: 'posts',
-    params: {}
+    route: 'posts'
   })
   equal(events, ['/posts'])
 })
@@ -358,9 +356,9 @@ test('ignores the same URL in manual URL', () => {
 test('allows RegExp routes', () => {
   changePath('/posts/draft/10/')
   equal(router.get(), {
+    params: { id: '10', type: 'draft' },
     path: '/posts/draft/10',
-    route: 'draft',
-    params: { type: 'draft', id: '10' }
+    route: 'draft'
   })
 })
 
@@ -392,12 +390,12 @@ test('opens URLs manually by route name, pushing new stare', () => {
 
   equal(location.href, 'http://localhost/posts/guides/10')
   equal(router.get(), {
-    path: '/posts/guides/10',
-    route: 'post',
     params: {
       categoryId: 'guides',
       id: '10'
-    }
+    },
+    path: '/posts/guides/10',
+    route: 'post'
   })
 })
 
@@ -410,18 +408,18 @@ test('opens URLs manually by route name, replacing state', () => {
 
   equal(location.href, 'http://localhost/posts/guides/10')
   equal(router.get(), {
-    path: '/posts/guides/10',
-    route: 'post',
     params: {
       categoryId: 'guides',
       id: '10'
-    }
+    },
+    path: '/posts/guides/10',
+    route: 'post'
   })
 })
 
 test('throws on opening RegExp router', () => {
   throws(() => {
-    getPagePath(router, 'draft', { type: 'new', id: '1' })
+    getPagePath(router, 'draft', { id: '1', type: 'new' })
   }, 'RegExp routes are not supported')
 })
 
@@ -491,31 +489,31 @@ test('uses search query on request', () => {
   listen(otherRouter)
 
   equal(otherRouter.get(), {
+    params: {},
     path: '/p?page=a',
-    route: 'a',
-    params: {}
+    route: 'a'
   })
 
   let link = createTag(document.body, 'a', { href: '/p?page=b' })
   link.click()
   equal(otherRouter.get(), {
+    params: {},
     path: '/p?page=b',
-    route: 'b',
-    params: {}
+    route: 'b'
   })
 
   changePath('/p?page=a')
   equal(otherRouter.get(), {
+    params: {},
     path: '/p?page=a',
-    route: 'a',
-    params: {}
+    route: 'a'
   })
 
   changePath('/p/?page=b')
   equal(otherRouter.get(), {
+    params: {},
     path: '/p?page=b',
-    route: 'b',
-    params: {}
+    route: 'b'
   })
 })
 
@@ -528,9 +526,9 @@ test('supports dot in URL', () => {
   listen(otherRouter)
 
   equal(otherRouter.get(), {
+    params: {},
     path: '/page.txt',
-    route: 'text',
-    params: {}
+    route: 'text'
   })
 
   changePath('/page.html')

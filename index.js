@@ -36,7 +36,7 @@ export function createRouter(routes, opts = {}) {
     for (let [route, pattern, cb] of router.routes) {
       let match = path.match(pattern)
       if (match) {
-        return { path, route, params: cb(...match.slice(1)) }
+        return { params: cb(...match.slice(1)), path, route }
       }
     }
   }

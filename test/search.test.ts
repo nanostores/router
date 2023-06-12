@@ -1,11 +1,9 @@
-import type { SearchParamsStore } from '../index.js'
-
-import { cleanStores } from 'nanostores'
-import { equal } from 'uvu/assert'
 import { JSDOM } from 'jsdom'
+import { cleanStores } from 'nanostores'
 import { test } from 'uvu'
+import { equal } from 'uvu/assert'
 
-import { createSearchParams } from '../index.js'
+import { createSearchParams, type SearchParamsStore } from '../index.js'
 
 let dom = new JSDOM('<body></body>', { url: 'http://localhost/' })
 
@@ -229,8 +227,8 @@ test('respects download attribute', () => {
   listen()
 
   let link = createTag(document.body, 'a', {
-    href: '/?a=2',
-    download: 'a.txt'
+    download: 'a.txt',
+    href: '/?a=2'
   })
   link.click()
 

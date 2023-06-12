@@ -24,7 +24,7 @@ type PathToParams<PathArray, Params = {}> = PathArray extends [
 
 type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>>
 
-export type RouterConfig = Record<string, string | Pattern<any>>
+export type RouterConfig = Record<string, Pattern<any> | string>
 
 export type ConfigFromRouter<SomeRouter> = SomeRouter extends Router<
   infer Config
@@ -66,15 +66,15 @@ export type Page<
   PageName extends keyof Config = any
 > = PageName extends any
   ? {
+      params: ParamsFromConfig<Config>[PageName]
       path: string
       route: PageName
-      params: ParamsFromConfig<Config>[PageName]
     }
   : never
 
 export interface RouterOptions {
-  search?: boolean
   links?: boolean
+  search?: boolean
 }
 
 /**
@@ -95,11 +95,6 @@ export interface RouterOptions {
 export interface Router<Config extends RouterConfig = RouterConfig>
   extends ReadableAtom<Page<Config, keyof Config> | undefined> {
   /**
-   * Converted routes.
-   */
-  routes: [string, RegExp, (...params: string[]) => object, string?][]
-
-  /**
    * Open URL without page reloading.
    *
    * ```js
@@ -111,6 +106,11 @@ export interface Router<Config extends RouterConfig = RouterConfig>
    * @param redirect Don’t add entry to the navigation history.
    */
   open(path: string, redirect?: boolean): void
+
+  /**
+   * Converted routes.
+   */
+  routes: [string, RegExp, (...params: string[]) => object, string?][]
 }
 
 /**

@@ -1,11 +1,11 @@
 import { createRouter, openPage, redirectPage } from '../index.js'
 
 let router = createRouter({
+  create: [/\/post\/(new|draft)/, type => ({ mode: 'editor', type })],
+  exit: '/exit',
   home: '/',
-  create: [/\/post\/(new|draft)/, type => ({ type, mode: 'editor' })],
   post: '/post/:id',
-  profile: '/user/:userId?',
-  exit: '/exit'
+  profile: '/user/:userId?'
 })
 
 router.subscribe(page => {

@@ -1,12 +1,12 @@
 import { cleanStores } from 'nanostores'
-import { equal } from 'uvu/assert'
 import { test } from 'uvu'
+import { equal } from 'uvu/assert'
 
 import { createRouter, createSearchParams } from '../index.js'
 
 let router = createRouter({
-  posts: '/posts/',
-  home: '/'
+  home: '/',
+  posts: '/posts/'
 } as const)
 
 let params = createSearchParams()
@@ -17,9 +17,9 @@ test.after.each(() => {
 
 test('opens home by default', () => {
   equal(router.get(), {
+    params: {},
     path: '/',
-    route: 'home',
-    params: {}
+    route: 'home'
   })
   equal(params.get(), {})
 })
@@ -32,9 +32,9 @@ test('opens custom page', () => {
   params.open({ a: '2' })
 
   equal(router.get(), {
+    params: {},
     path: '/posts',
-    route: 'posts',
-    params: {}
+    route: 'posts'
   })
   equal(params.get(), { a: '2' })
 })
