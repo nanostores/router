@@ -19,7 +19,7 @@ not a component in UI framework like React.
 // stores/router.ts
 import { createRouter } from '@nanostores/router'
 
-export const router = createRouter({
+export const $router = createRouter({
   home: '/',
   category: '/posts/:categoryId',
   post: '/posts/:categoryId/:postId'
@@ -33,10 +33,10 @@ in browser.
 // components/layout.tsx
 import { useStore } from '@nanostores/react'
 
-import { router } from '../stores/router.js'
+import { $router } from '../stores/router.js'
 
 export const Layout = () => {
-  const page = useStore(router)
+  const page = useStore($router)
 
   if (!page) {
     return <Error404 />
@@ -135,23 +135,23 @@ For instance, for filters settings on search page.
 // stores/searchParams.ts
 import { createSearchParams } from '@nanostores/router'
 
-export const searchParams = createSearchParams()
+export const $searchParams = createSearchParams()
 ```
 
 ```js
 // stores/searchResult.ts
-import { searchParams } from '../searchParams'
+import { $searchParams } from '../searchParams'
 
-export const searchResult = atom([])
+export const $searchResult = atom([])
 
-onMount(searchResult, () => {
-  return searchParams.subscribe(params => {
-    searchResult.set(await search(params))
+onMount($searchResult, () => {
+  return $searchParams.subscribe(params => {
+    $searchResult.set(await search(params))
   })
 })
 
 function changeSearchParam(key: 'sort' | 'filter', value: string) {
-  searchParams.open({ ...searchParams.get(), [key]: value })
+  $searchParams.open({ ...$searchParams.get(), [key]: value })
 }
 ```
 
@@ -164,12 +164,12 @@ You can disable this behavior by `links: false` options and create custom
 `<Link>` component.
 
 ```js
-export const router = createRouter({ … }, { links: false })
+export const $router = createRouter({ … }, { links: false })
 
 function onClick (e) {
   let link = event.target.closest('a')
   if (isPjax(link, e)) {
-    router.open(new Url(link.href).pathname)
+    $router.open(new Url(link.href).pathname)
   }
 }
 
@@ -188,7 +188,7 @@ to use the router as a single place of truth.
 import { getPagePath } from '@nanostores/router'
 
 …
-  <a href={getPagePath(router, 'post', { categoryId: 'guides', id: '10' })}>
+  <a href={getPagePath($router, 'post', { categoryId: 'guides', id: '10' })}>
 ```
 
 If you need to change URL programmatically you can use `openPage`
@@ -198,12 +198,12 @@ or `redirectPage`:
 import { openPage, redirectPage } from '@nanostores/router'
 
 function requireLogin () {
-  openPage(router, 'login')
+  openPage($router, 'login')
 }
 
 function onLoginSuccess() {
   // Replace login route, so we don’t face it on back navigation
-  redirectPage(router, 'home')
+  redirectPage($router, 'home')
 }
 ```
 
@@ -217,6 +217,6 @@ You can manually set any other route:
 
 ```js
 if (isServer) {
-  router.open('/posts/demo/1')
+  $router.open('/posts/demo/1')
 }
 ```
