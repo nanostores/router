@@ -7,7 +7,7 @@ A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
 * **Small.** 839 bytes (minified and gzipped).
-  Zero dependencies. It uses [Size Limit] to control size.
+  Zero dependencies.
 * Good **TypeScript** support.
 * Framework agnostic. Can be used with **React**, **Preact**, **Vue**,
   **Svelte**, **Angular**, **Solid.js**, and vanilla JS.
@@ -54,8 +54,6 @@ export const Layout = () => {
   <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg"
        alt="Sponsored by Evil Martians" width="236" height="54">
 </a>
-
-[Size Limit]: https://github.com/ai/size-limit
 
 
 ## Install
