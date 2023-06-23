@@ -45,25 +45,24 @@ export function createRouter(routes, opts = {}) {
     let link = event.target.closest('a')
     if (
       link &&
-      !link.defaultPrevented &&
-      event.button === 0 &&
-      link.target !== '_blank' &&
-      link.dataset.noRouter == null &&
-      link.rel !== 'external' &&
-      !link.download &&
-      !event.metaKey &&
-      !event.ctrlKey &&
-      !event.shiftKey &&
-      !event.altKey
+      event.button === 0 && // Left mouse button
+      link.target !== '_blank' && // Not for new tab
+      link.origin === location.origin && // Not external link
+      link.rel !== 'external' && // Not external link
+      link.dataset.noRouter == null && // Now manually disabled
+      !link.download && // Not download link
+      !event.altKey && // Not download link by user
+      !event.metaKey && // Not open in new tab by user
+      !event.ctrlKey && // Not open in new tab by user
+      !event.shiftKey // Not open in new window by user
     ) {
-      let url = new URL(link.href)
-      if (url.origin === location.origin) {
+      if (link.origin === location.origin) {
         event.preventDefault()
-        let changed = location.hash !== url.hash
-        router.open(url.pathname + url.search)
+        let changed = location.hash !== link.hash
+        router.open(link.pathname + link.search)
         if (changed) {
-          location.hash = url.hash
-          if (url.hash === '' || url.hash === '#') {
+          location.hash = link.hash
+          if (link.hash === '' || link.hash === '#') {
             window.dispatchEvent(new HashChangeEvent('hashchange'))
           }
         }
