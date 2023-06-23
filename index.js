@@ -182,6 +182,7 @@ export function createSearchParams(opts = {}) {
       link &&
       event.button === 0 && // Left mouse button
       link.target !== '_blank' && // Not for new tab
+      link.origin === location.origin && // Not external link
       link.rel !== 'external' && // Not external link
       link.dataset.noRouter == null && // Now manually disabled
       !link.download && // Not download link
@@ -190,16 +191,13 @@ export function createSearchParams(opts = {}) {
       !event.ctrlKey && // Not open in new tab by user
       !event.shiftKey // Not open in new window by user
     ) {
-      let url = new URL(link.href)
-      if (url.origin === location.origin) {
-        if (url.search !== prev) {
-          prev = url.search
-          set(Object.fromEntries(url.searchParams))
-        }
-        if (url.pathname === location.pathname && url.hash === location.hash) {
-          event.preventDefault()
-          history.pushState(null, null, link.href)
-        }
+      if (link.search !== prev) {
+        prev = link.search
+        set(Object.fromEntries(new URL(link.href).searchParams))
+      }
+      if (link.pathname === location.pathname && link.hash === location.hash) {
+        event.preventDefault()
+        history.pushState(null, null, link.href)
       }
     }
   }

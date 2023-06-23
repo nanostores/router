@@ -99,7 +99,7 @@
       "import": {
         "./index.js": "{ createSearchParams }"
       },
-      "limit": "526 B"
+      "limit": "520 B"
     }
   ],
   "clean-publish": {
