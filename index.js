@@ -12,7 +12,8 @@ function isRouterClick(event, link) {
     !event.altKey && // Not download link by user
     !event.metaKey && // Not open in new tab by user
     !event.ctrlKey && // Not open in new tab by user
-    !event.shiftKey // Not open in new window by user
+    !event.shiftKey && // Not open in new window by user
+    !event.defaultPrevented // Click was not cancelled
   )
 }
 

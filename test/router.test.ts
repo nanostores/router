@@ -331,6 +331,19 @@ test('respects download attribute', () => {
   equal(router.get()?.path, '/')
 })
 
+test('supports disabling click', () => {
+  changePath('/')
+  listen()
+
+  let link = createTag(document.body, 'a', { href: '/posts' })
+  link.addEventListener('click', e => {
+    e.preventDefault()
+  })
+  link.click()
+
+  equal(router.get()?.path, '/')
+})
+
 test('opens URLs manually', () => {
   changePath('/posts/guides/10/')
   let events = listen()
