@@ -155,18 +155,6 @@ test('ignore non-link clicks', () => {
   equal(store.get(), { a: '1' })
 })
 
-test('ignores links with noRouter data attribute', () => {
-  changePath('/?a=1')
-  listen()
-
-  let link = createTag(document.body, 'a', { href: '/page?a=2' })
-  link.dataset.noRouter = ''
-  let span = createTag(link, 'span')
-  span.click()
-
-  equal(store.get(), { a: '1' })
-})
-
 test('ignores new-tab links', () => {
   changePath('/?a=1')
   listen()
@@ -198,12 +186,11 @@ test('ignores the same URL in link', () => {
   equal(events, [])
 })
 
-test('respects data-ignore-router', () => {
+test('respects target self', () => {
   changePath('/?a=1')
   listen()
 
-  let link = createTag(document.body, 'a', { href: '/?a=2' })
-  link.setAttribute('data-no-router', '1')
+  let link = createTag(document.body, 'a', { href: '/?a=2', target: '_self' })
   link.click()
 
   equal(store.get(), { a: '1' })

@@ -1,7 +1,7 @@
 {
   "name": "@nanostores/router",
   "version": "0.10.0",
-  "description": "A tiny (848 bytes) router for Nano Stores state manager",
+  "description": "A tiny (834 bytes) router for Nano Stores state manager",
   "keywords": [
     "nano",
     "router",
@@ -12,7 +12,7 @@
     "store"
   ],
   "scripts": {
-    "unit": "tsm ./test/search.test.ts && tsm ./test/router.test.ts && tsm ./test/ssr.test.ts",
+    "unit": "tsm ./test/router.test.ts && tsm ./test/search.test.ts && tsm ./test/ssr.test.ts",
     "test": "c8 pnpm unit && eslint . && check-dts && size-limit"
   },
   "author": "Andrey Sitnik <andrey@sitnik.ru>",
@@ -92,14 +92,14 @@
       "import": {
         "./index.js": "{ createRouter }"
       },
-      "limit": "848 B"
+      "limit": "834 B"
     },
     {
       "name": "Search Params",
       "import": {
         "./index.js": "{ createSearchParams }"
       },
-      "limit": "545 B"
+      "limit": "531 B"
     }
   ],
   "clean-publish": {

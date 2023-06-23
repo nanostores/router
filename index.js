@@ -7,7 +7,6 @@ function isRouterClick(event, link) {
     link.target !== '_blank' && // Not for new tab
     link.origin === location.origin && // Not external link
     link.rel !== 'external' && // Not external link
-    link.dataset.noRouter == null && // Now manually disabled
     link.target !== '_self' && // Now manually disabled
     !link.download && // Not download link
     !event.altKey && // Not download link by user

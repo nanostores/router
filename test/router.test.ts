@@ -251,12 +251,11 @@ test('ignore non-link clicks', () => {
   equal(router.get()?.path, '/')
 })
 
-test('ignores links with noRouter data attribute', () => {
+test('ignores links with target self', () => {
   changePath('/')
   listen()
 
-  let link = createTag(document.body, 'a', { href: '/posts' })
-  link.dataset.noRouter = ''
+  let link = createTag(document.body, 'a', { href: '/posts', target: '_self' })
   let span = createTag(link, 'span')
   span.click()
 
@@ -292,17 +291,6 @@ test('ignores the same URL in link', () => {
   link.click()
 
   equal(events, [])
-})
-
-test('respects data-no-router', () => {
-  changePath('/')
-  listen()
-
-  let link = createTag(document.body, 'a', { href: '/posts' })
-  link.setAttribute('data-no-router', '1')
-  link.click()
-
-  equal(router.get()?.path, '/')
 })
 
 test('respects target self', () => {
