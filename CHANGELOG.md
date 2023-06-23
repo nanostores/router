@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.11
+* Replaced `data-no-router` to `target="_self"`.
+* Added ignoring clicks with `event.preventDefault()` calls.
+
 ## 0.10
 * Moved to Nano Stores 0.9.
 
