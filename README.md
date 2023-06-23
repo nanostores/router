@@ -6,7 +6,7 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-* **Small.** 839 bytes (minified and gzipped).
+* **Small.** 848 bytes (minified and gzipped).
   Zero dependencies.
 * Good **TypeScript** support.
 * Framework agnostic. Can be used with **React**, **Preact**, **Vue**,
@@ -159,6 +159,12 @@ function changeSearchParam(key: 'sort' | 'filter', value: string) {
 
 By default, router and `?search` params store will add `click` event listener
 on `window` to track links clicks.
+
+To disable click tracking for specific link, add `target="_self"` to link tag:
+
+```html
+<a href="/posts" target="_self">Posts</a>
+```
 
 You can disable this behavior by `links: false` options and create custom
 `<Link>` component.

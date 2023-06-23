@@ -294,12 +294,22 @@ test('ignores the same URL in link', () => {
   equal(events, [])
 })
 
-test('respects data-ignore-router', () => {
+test('respects data-no-router', () => {
   changePath('/')
   listen()
 
   let link = createTag(document.body, 'a', { href: '/posts' })
   link.setAttribute('data-no-router', '1')
+  link.click()
+
+  equal(router.get()?.path, '/')
+})
+
+test('respects target self', () => {
+  changePath('/')
+  listen()
+
+  let link = createTag(document.body, 'a', { href: '/posts', target: '_self' })
   link.click()
 
   equal(router.get()?.path, '/')
