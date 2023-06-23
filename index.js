@@ -1,5 +1,21 @@
 import { atom, onMount } from 'nanostores'
 
+function isRouterClick(event, link) {
+  return (
+    link &&
+    event.button === 0 && // Left mouse button
+    link.target !== '_blank' && // Not for new tab
+    link.origin === location.origin && // Not external link
+    link.rel !== 'external' && // Not external link
+    link.dataset.noRouter == null && // Now manually disabled
+    !link.download && // Not download link
+    !event.altKey && // Not download link by user
+    !event.metaKey && // Not open in new tab by user
+    !event.ctrlKey && // Not open in new tab by user
+    !event.shiftKey // Not open in new window by user
+  )
+}
+
 export function createRouter(routes, opts = {}) {
   let router = atom()
   router.routes = Object.keys(routes).map(name => {
@@ -43,19 +59,7 @@ export function createRouter(routes, opts = {}) {
 
   let click = event => {
     let link = event.target.closest('a')
-    if (
-      link &&
-      event.button === 0 && // Left mouse button
-      link.target !== '_blank' && // Not for new tab
-      link.origin === location.origin && // Not external link
-      link.rel !== 'external' && // Not external link
-      link.dataset.noRouter == null && // Now manually disabled
-      !link.download && // Not download link
-      !event.altKey && // Not download link by user
-      !event.metaKey && // Not open in new tab by user
-      !event.ctrlKey && // Not open in new tab by user
-      !event.shiftKey // Not open in new window by user
-    ) {
+    if (isRouterClick(event, link)) {
       if (link.origin === location.origin) {
         event.preventDefault()
         let changed = location.hash !== link.hash
@@ -177,19 +181,7 @@ export function createSearchParams(opts = {}) {
 
   let click = event => {
     let link = event.target.closest('a')
-    if (
-      link &&
-      event.button === 0 && // Left mouse button
-      link.target !== '_blank' && // Not for new tab
-      link.origin === location.origin && // Not external link
-      link.rel !== 'external' && // Not external link
-      link.dataset.noRouter == null && // Now manually disabled
-      !link.download && // Not download link
-      !event.altKey && // Not download link by user
-      !event.metaKey && // Not open in new tab by user
-      !event.ctrlKey && // Not open in new tab by user
-      !event.shiftKey // Not open in new window by user
-    ) {
+    if (isRouterClick(event, link)) {
       if (link.search !== prev) {
         prev = link.search
         set(Object.fromEntries(new URL(link.href).searchParams))
