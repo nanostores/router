@@ -7,7 +7,7 @@ import { createRouter, createSearchParams } from '../index.js'
 let router = createRouter({
   home: '/',
   posts: '/posts/'
-} as const)
+})
 
 let params = createSearchParams()
 

@@ -89,7 +89,7 @@ export interface RouterOptions {
  *   home: '/',
  *   category: '/posts/:categoryId',
  *   post: '/posts/:categoryId/:id'
- * } as const)
+ * })
  * ```
  */
 export interface Router<Config extends RouterConfig = RouterConfig>
@@ -123,7 +123,7 @@ export interface Router<Config extends RouterConfig = RouterConfig>
  *   home: '/',
  *   category: '/posts/:categoryId',
  *   post: '/posts/:categoryId/:id'
- * } as const)
+ * })
  * ```
  *
  * @param routes URL patterns.

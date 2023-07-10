@@ -51,7 +51,7 @@ let router = createRouter({
   post: '/posts/:categoryId/:id',
   posts: '/posts/',
   secret: '/[secret]/:id'
-} as const)
+})
 
 let otherRouter: Router<any> | undefined
 
@@ -217,7 +217,7 @@ test('disables clicks detects on request', () => {
     {
       home: '/',
       posts: '/posts/'
-    } as const,
+    },
     {
       links: false
     }
