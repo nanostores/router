@@ -13,7 +13,11 @@
   ],
   "scripts": {
     "unit": "tsm ./test/router.test.ts && tsm ./test/search.test.ts && tsm ./test/ssr.test.ts",
-    "test": "c8 pnpm unit && eslint . && check-dts && size-limit"
+    "test:lint": "eslint .",
+    "test:coverage": "c8 pnpm unit",
+    "test:types": "check-dts",
+    "test:size": "size-limit",
+    "test": "pnpm run /^test:/"
   },
   "author": "Andrey Sitnik <andrey@sitnik.ru>",
   "license": "MIT",
