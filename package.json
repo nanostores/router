@@ -96,14 +96,14 @@
       "import": {
         "./index.js": "{ createRouter }"
       },
-      "limit": "827 B"
+      "limit": "822 B"
     },
     {
       "name": "Search Params",
       "import": {
         "./index.js": "{ createSearchParams }"
       },
-      "limit": "522 B"
+      "limit": "520 B"
     }
   ],
   "clean-publish": {
