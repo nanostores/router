@@ -23,7 +23,7 @@ export function createRouter(routes, opts = {}) {
     let value = routes[name]
     if (typeof value === 'string') {
       value = value.replace(/\/$/g, '') || '/'
-      let names = (value.match(/\/:\w+/g) || []).map(i => i.slice(2))
+      let names = value.match(/(?<=\/:)\w+/g) || []
       let pattern = value
         .replace(/[\s!#$()+,.:<=?[\\\]^{|}]/g, '\\$&')
         .replace(/\/\\:\w+\\\?/g, '/?([^/]*)')
