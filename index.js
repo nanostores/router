@@ -61,15 +61,13 @@ export function createRouter(routes, opts = {}) {
   let click = event => {
     let link = event.target.closest('a')
     if (isRouterClick(event, link)) {
-      if (link.origin === location.origin) {
-        event.preventDefault()
-        let changed = location.hash !== link.hash
-        router.open(link.pathname + link.search)
-        if (changed) {
-          location.hash = link.hash
-          if (link.hash === '' || link.hash === '#') {
-            window.dispatchEvent(new HashChangeEvent('hashchange'))
-          }
+      event.preventDefault()
+      let changed = location.hash !== link.hash
+      router.open(link.pathname + link.search)
+      if (changed) {
+        location.hash = link.hash
+        if (link.hash === '' || link.hash === '#') {
+          window.dispatchEvent(new HashChangeEvent('hashchange'))
         }
       }
     }
