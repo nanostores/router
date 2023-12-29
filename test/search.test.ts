@@ -12,7 +12,6 @@ global.window = dom.window
 global.document = dom.window.document
 global.location = dom.window.location
 global.history = dom.window.history
-global.navigator = dom.window.navigator
 global.PopStateEvent = dom.window.PopStateEvent
 global.MouseEvent = dom.window.MouseEvent
 global.HashChangeEvent = dom.window.HashChangeEvent

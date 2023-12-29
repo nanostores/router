@@ -3,7 +3,13 @@ import { cleanStores } from 'nanostores'
 import { test } from 'uvu'
 import { equal, is, throws } from 'uvu/assert'
 
-import { createRouter, getPagePath, openPage, redirectPage, type Router } from '../index.js'
+import {
+  createRouter,
+  getPagePath,
+  openPage,
+  redirectPage,
+  type Router
+} from '../index.js'
 
 let dom = new JSDOM('<body></body>', { url: 'http://localhost/' })
 
@@ -12,7 +18,6 @@ global.window = dom.window
 global.document = dom.window.document
 global.location = dom.window.location
 global.history = dom.window.history
-global.navigator = dom.window.navigator
 global.PopStateEvent = dom.window.PopStateEvent
 global.MouseEvent = dom.window.MouseEvent
 global.HashChangeEvent = dom.window.HashChangeEvent
