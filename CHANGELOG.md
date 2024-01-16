@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.12
+* Allowed to pass number to router parameter.
+* Removed Node.js 16 support.
+
 ## 0.11
 * Replaced `data-no-router` to `target="_self"`.
 * Added ignoring clicks with `event.preventDefault()` calls.
@@ -14,7 +18,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.9
 * Moved to Nano Stores 0.8.
 * Moved to TypeScript 5.
-* Remove Node.js 14 support.
+* Removed Node.js 14 support.
 
 ## 0.8.3
 * Fixed URL normalization on `search` option.
