@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.12.1
+* Fixed parameter output type regression.
+
 ## 0.12
 * Allowed to pass number to router parameter.
 * Removed Node.js 16 support.
