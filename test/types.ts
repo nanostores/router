@@ -14,10 +14,12 @@ router.subscribe(page => {
   } else if (page.route === 'post') {
     router.open(`/post/${page.params.id}`)
     openPage(router, 'post', { id: '1' })
+    openPage(router, 'post', { id: 1 })
     openPage(router, 'home')
     openPage(router, 'profile')
     openPage(router, 'profile', {})
     openPage(router, 'profile', { userId: '123' })
+    openPage(router, 'profile', { userId: 123 })
     redirectPage(router, 'post', { id: '1' })
     redirectPage(router, 'home')
   } else if (page.route === 'create') {

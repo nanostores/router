@@ -159,7 +159,8 @@ export function createSearchParams(opts = {}) {
   }
 
   store.open = (params, redirect) => {
-    let search = new URLSearchParams(params).toString()
+    let urlParams = new URLSearchParams(params)
+    let search = urlParams.toString()
     if (search) search = '?' + search
 
     if (prev === search) return
@@ -175,7 +176,7 @@ export function createSearchParams(opts = {}) {
         }
       }
     }
-    set(params)
+    set(Object.fromEntries(urlParams.entries()))
   }
 
   let click = event => {

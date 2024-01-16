@@ -386,6 +386,10 @@ test('generates URLs', () => {
     '/posts/guides/1'
   )
   equal(
+    getPagePath(router, 'post', { categoryId: 'guides', id: 1 }),
+    '/posts/guides/1'
+  )
+  equal(
     getPagePath(router, 'post', { categoryId: 'a#b', id: '1' }),
     '/posts/a%23b/1'
   )
@@ -411,6 +415,18 @@ test('opens URLs manually by route name, pushing new stare', () => {
       id: '10'
     },
     path: '/posts/guides/10',
+    route: 'post'
+  })
+
+  openPage(router, 'post', { categoryId: 'guides', id: 11 })
+  equal(history.length - start, 4)
+  equal(location.href, 'http://localhost/posts/guides/11')
+  equal(router.get(), {
+    params: {
+      categoryId: 'guides',
+      id: '11'
+    },
+    path: '/posts/guides/11',
     route: 'post'
   })
 })

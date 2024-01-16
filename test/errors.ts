@@ -11,7 +11,7 @@ router.subscribe(page => {
   if (!page) {
     console.log('404')
   } else if (page.route === 'post') {
-    // THROWS Property 'type' does not exist on type 'Record<"id", string>'
+    // THROWS Property 'type' does not exist on type 'Record<"id"
     router.open(`/post/${page.params.type}`)
     // THROWS '"home" | "exit" | "create"' and '"creat"' have no overlap
   } else if (page.route === 'creat') {
@@ -24,7 +24,7 @@ router.subscribe(page => {
   console.log(page.route)
 })
 
-// THROWS 'category' does not exist in type 'Record<"id", string>'
+// THROWS 'category' does not exist in type 'Record<"id"
 openPage(router, 'post', { id: '1', category: 'guides' })
 // THROWS Expected 2 arguments, but got 3
 openPage(router, 'home', { id: '1' })
@@ -34,7 +34,7 @@ openPage(router, 'create', { id: '1' })
 // THROWS Expected 3 arguments, but got 2.
 openPage(router, 'create')
 
-// THROWS 'category' does not exist in type 'Record<"id", string>'
+// THROWS 'category' does not exist in type 'Record<"id"
 redirectPage(router, 'post', { id: '1', category: 'guides' })
 // THROWS Expected 2 arguments, but got 3
 redirectPage(router, 'home', { id: '1' })

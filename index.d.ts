@@ -17,8 +17,8 @@ type PathToParams<PathArray, Params = {}> = PathArray extends [
   ? First extends `:${infer Param}`
     ? // eslint-disable-next-line @typescript-eslint/no-shadow
       First extends `:${infer Param}?`
-      ? PathToParams<Rest, Params & Partial<Record<Param, string>>>
-      : PathToParams<Rest, Params & Record<Param, string>>
+      ? PathToParams<Rest, Params & Partial<Record<Param, string | number>>>
+      : PathToParams<Rest, Params & Record<Param, string | number>>
     : PathToParams<Rest, Params>
   : Params
 
@@ -222,7 +222,7 @@ export interface SearchParamsStore
    *             or domain-less URL (`/a`).
    * @param redirect Don’t add entry to the navigation history.
    */
-  open(params: Record<string, string>, redirect?: boolean): void
+  open(params: Record<string, string | number>, redirect?: boolean): void
 }
 
 /**

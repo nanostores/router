@@ -229,6 +229,11 @@ test('opens URLs manually', () => {
   equal(location.href, 'http://localhost/page?a=2#hash')
   equal(store.get(), { a: '2' })
   equal(events, [{ a: '2' }])
+
+  store.open({ a: 3 })
+  equal(location.href, 'http://localhost/page?a=3#hash')
+  equal(store.get(), { a: '3' })
+  equal(events, [{ a: '2' }, { a: '3' }])
 })
 
 test('opens empty params manually', () => {
@@ -247,7 +252,6 @@ test('opens URLs manually with state replacing', () => {
   listen()
   store.open({ a: '2' }, true)
   equal(history.length - start, 2)
-
   equal(location.href, 'http://localhost/?a=2')
   equal(store.get(), { a: '2' })
 })
@@ -257,6 +261,9 @@ test('ignores the same URL in manual URL', () => {
   let events = listen()
 
   store.open({ a: '1' })
+  equal(events, [])
+
+  store.open({ a: 1 })
   equal(events, [])
 })
 
