@@ -1,6 +1,6 @@
 import { cleanStores } from 'nanostores'
-import { test } from 'uvu'
-import { equal } from 'uvu/assert'
+import { test, afterEach } from 'node:test'
+import { deepStrictEqual } from 'node:assert'
 
 import { createRouter, createSearchParams } from '../index.js'
 
@@ -11,17 +11,17 @@ let router = createRouter({
 
 let params = createSearchParams()
 
-test.after.each(() => {
+afterEach(() => {
   cleanStores(router, params)
 })
 
 test('opens home by default', () => {
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {},
     path: '/',
     route: 'home'
   })
-  equal(params.get(), {})
+  deepStrictEqual(params.get(), {})
 })
 
 test('opens custom page', () => {
@@ -31,12 +31,10 @@ test('opens custom page', () => {
   router.open('/posts')
   params.open({ a: '2' })
 
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {},
     path: '/posts',
     route: 'posts'
   })
-  equal(params.get(), { a: '2' })
+  deepStrictEqual(params.get(), { a: '2' })
 })
-
-test.run()

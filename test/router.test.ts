@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom'
 import { cleanStores } from 'nanostores'
-import { test } from 'uvu'
-import { equal, is, throws } from 'uvu/assert'
+import { test, afterEach } from 'node:test'
+import { deepStrictEqual, throws, equal } from 'node:assert'
 
 import {
   createRouter,
@@ -69,7 +69,7 @@ test.before(() => {
   })
 })
 
-test.after.each(() => {
+afterEach(() => {
   cleanStores(router, otherRouter)
   while (document.body.firstChild) {
     document.body.removeChild(document.body.firstChild)
@@ -78,7 +78,7 @@ test.after.each(() => {
 
 test('parses current location', () => {
   changePath('/posts/guides/10')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       categoryId: 'guides',
       id: '10'
@@ -90,7 +90,7 @@ test('parses current location', () => {
 
 test('ignores last slash', () => {
   changePath('/posts/guides/10/')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       categoryId: 'guides',
       id: '10'
@@ -102,12 +102,12 @@ test('ignores last slash', () => {
 
 test('processes 404', () => {
   changePath('/posts/guides')
-  is(router.get(), undefined)
+  deepStrictEqual(router.get(), undefined)
 })
 
 test('escapes RegExp symbols in routes', () => {
   changePath('/[secret]/9')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       id: '9'
     },
@@ -118,7 +118,7 @@ test('escapes RegExp symbols in routes', () => {
 
 test('converts URL-encoded symbols', () => {
   changePath('/posts/a%23b/10')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       categoryId: 'a#b',
       id: '10'
@@ -130,7 +130,7 @@ test('converts URL-encoded symbols', () => {
 
 test('ignores hash and search', () => {
   changePath('/posts/?id=1#top')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {},
     path: '/posts',
     route: 'posts'
@@ -139,7 +139,7 @@ test('ignores hash and search', () => {
 
 test('ignores case', () => {
   changePath('/POSTS')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {},
     path: '/POSTS',
     route: 'posts'
@@ -148,7 +148,7 @@ test('ignores case', () => {
 
 test('parameters can be optional', () => {
   changePath('/profile/')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       id: '',
       tab: ''
@@ -158,7 +158,7 @@ test('parameters can be optional', () => {
   })
 
   changePath('/profile/10/')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       id: '10',
       tab: ''
@@ -168,7 +168,7 @@ test('parameters can be optional', () => {
   })
 
   changePath('/profile/10/contacts')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       id: '10',
       tab: 'contacts'
@@ -183,8 +183,8 @@ test('detects URL changes', () => {
   let events = listen()
 
   changePath('/')
-  equal(router.get(), { params: {}, path: '/', route: 'home' })
-  equal(events, ['/'])
+  deepStrictEqual(router.get(), { params: {}, path: '/', route: 'home' })
+  deepStrictEqual(events, ['/'])
 })
 
 test('unbinds events', () => {
@@ -193,7 +193,7 @@ test('unbinds events', () => {
 
   cleanStores(router)
   changePath('/')
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('ignores the same URL in popstate', () => {
@@ -201,7 +201,7 @@ test('ignores the same URL in popstate', () => {
   let events = listen()
 
   changePath('/posts/guides/10/')
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('detects clicks', () => {
@@ -209,12 +209,12 @@ test('detects clicks', () => {
   let events = listen()
 
   createTag(document.body, 'a', { href: '/posts' }).click()
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {},
     path: '/posts',
     route: 'posts'
   })
-  equal(events, ['/posts'])
+  deepStrictEqual(events, ['/posts'])
 })
 
 test('disables clicks detects on request', () => {
@@ -231,12 +231,12 @@ test('disables clicks detects on request', () => {
   let events = listen(otherRouter)
 
   createTag(document.body, 'a', { href: '/posts' }).click()
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {},
     path: '/',
     route: 'home'
   })
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('accepts click on tag inside link', () => {
@@ -285,7 +285,7 @@ test('ignores external links', () => {
   link.click()
 
   equal(router.get()?.path, '/')
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('ignores the same URL in link', () => {
@@ -295,7 +295,7 @@ test('ignores the same URL in link', () => {
   let link = createTag(document.body, 'a', { href: '/posts' })
   link.click()
 
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('respects target self', () => {
@@ -353,12 +353,12 @@ test('opens URLs manually', () => {
 
   router.open('/posts/')
   equal(location.href, 'http://localhost/posts/')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {},
     path: '/posts',
     route: 'posts'
   })
-  equal(events, ['/posts'])
+  deepStrictEqual(events, ['/posts'])
 })
 
 test('ignores the same URL in manual URL', () => {
@@ -366,12 +366,12 @@ test('ignores the same URL in manual URL', () => {
   let events = listen()
 
   router.open('/posts/guides/10')
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('allows RegExp routes', () => {
   changePath('/posts/draft/10/')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: { id: '10', type: 'draft' },
     path: '/posts/draft/10',
     route: 'draft'
@@ -409,7 +409,7 @@ test('opens URLs manually by route name, pushing new stare', () => {
   equal(history.length - start, 3)
 
   equal(location.href, 'http://localhost/posts/guides/10')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       categoryId: 'guides',
       id: '10'
@@ -421,7 +421,7 @@ test('opens URLs manually by route name, pushing new stare', () => {
   openPage(router, 'post', { categoryId: 'guides', id: 11 })
   equal(history.length - start, 4)
   equal(location.href, 'http://localhost/posts/guides/11')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       categoryId: 'guides',
       id: '11'
@@ -439,7 +439,7 @@ test('opens URLs manually by route name, replacing state', () => {
   equal(history.length - start, 2)
 
   equal(location.href, 'http://localhost/posts/guides/10')
-  equal(router.get(), {
+  deepStrictEqual(router.get(), {
     params: {
       categoryId: 'guides',
       id: '10'
@@ -452,7 +452,7 @@ test('opens URLs manually by route name, replacing state', () => {
 test('throws on opening RegExp router', () => {
   throws(() => {
     getPagePath(router, 'draft', { id: '1', type: 'new' })
-  }, 'RegExp routes are not supported')
+  }, /RegExp routes are not supported/)
 })
 
 test('supports link with hash in URL with same path', () => {
@@ -463,7 +463,7 @@ test('supports link with hash in URL with same path', () => {
   link.click()
 
   equal(location.hash, '#hash')
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('supports link with hash in URL and different path', () => {
@@ -474,7 +474,7 @@ test('supports link with hash in URL and different path', () => {
   link.click()
 
   equal(location.hash, '#hash')
-  equal(events, ['/posts'])
+  deepStrictEqual(events, ['/posts'])
 })
 
 test('supports link with search in URL and different path', () => {
@@ -485,7 +485,7 @@ test('supports link with search in URL and different path', () => {
   link.click()
 
   equal(location.search, '?q=1')
-  equal(events, ['/posts'])
+  deepStrictEqual(events, ['/posts'])
 })
 
 test('generates artificial hashchange event for empty hash', () => {
@@ -502,7 +502,7 @@ test('generates artificial hashchange event for empty hash', () => {
 
   window.removeEventListener('hashchange', onHashChange)
   equal(location.hash, '')
-  equal(events, [])
+  deepStrictEqual(events, [])
   equal(hashChangeCalled, 1)
 })
 
@@ -520,7 +520,7 @@ test('uses search query on request', () => {
   changePath('/p?page=a')
   listen(otherRouter)
 
-  equal(otherRouter.get(), {
+  deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/p?page=a',
     route: 'a'
@@ -528,21 +528,21 @@ test('uses search query on request', () => {
 
   let link = createTag(document.body, 'a', { href: '/p?page=b' })
   link.click()
-  equal(otherRouter.get(), {
+  deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/p?page=b',
     route: 'b'
   })
 
   changePath('/p?page=a')
-  equal(otherRouter.get(), {
+  deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/p?page=a',
     route: 'a'
   })
 
   changePath('/p/?page=b')
-  equal(otherRouter.get(), {
+  deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/p?page=b',
     route: 'b'
@@ -557,14 +557,12 @@ test('supports dot in URL', () => {
   changePath('/page.txt')
   listen(otherRouter)
 
-  equal(otherRouter.get(), {
+  deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/page.txt',
     route: 'text'
   })
 
   changePath('/page.html')
-  equal(otherRouter.get(), undefined)
+  deepStrictEqual(otherRouter.get(), undefined)
 })
-
-test.run()

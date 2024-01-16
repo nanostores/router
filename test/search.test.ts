@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom'
 import { cleanStores } from 'nanostores'
-import { test } from 'uvu'
-import { equal } from 'uvu/assert'
+import { test, afterEach } from 'node:test'
+import { deepStrictEqual, equal } from 'node:assert'
 
 import { createSearchParams, type SearchParamsStore } from '../index.js'
 
@@ -56,7 +56,7 @@ test.before(() => {
   })
 })
 
-test.after.each(() => {
+afterEach(() => {
   cleanStores(store, otherStore)
   while (document.body.firstChild) {
     document.body.removeChild(document.body.firstChild)
@@ -65,29 +65,29 @@ test.after.each(() => {
 
 test('parses current location', () => {
   changePath('/page?a=1')
-  equal(store.get(), { a: '1' })
+  deepStrictEqual(store.get(), { a: '1' })
 })
 
 test('parses with empty search', () => {
   changePath('/page')
-  equal(store.get(), {})
+  deepStrictEqual(store.get(), {})
 })
 
 test('converts URL-encoded symbols', () => {
   changePath('/?category=a%23b')
-  equal(store.get(), {
+  deepStrictEqual(store.get(), {
     category: 'a#b'
   })
 })
 
 test('ignores hash and path', () => {
   changePath('/posts/?id=1#top')
-  equal(store.get(), { id: '1' })
+  deepStrictEqual(store.get(), { id: '1' })
 })
 
 test('works without params', () => {
   changePath('/posts/?fast')
-  equal(store.get(), { fast: '' })
+  deepStrictEqual(store.get(), { fast: '' })
 })
 
 test('detects URL changes', () => {
@@ -95,8 +95,8 @@ test('detects URL changes', () => {
   let events = listen()
 
   changePath('/?a=2')
-  equal(store.get(), { a: '2' })
-  equal(events, [{ a: '2' }])
+  deepStrictEqual(store.get(), { a: '2' })
+  deepStrictEqual(events, [{ a: '2' }])
 })
 
 test('unbinds events', () => {
@@ -105,7 +105,7 @@ test('unbinds events', () => {
 
   cleanStores(store)
   changePath('/?a=2')
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('ignores the same URL in popstate', () => {
@@ -113,7 +113,7 @@ test('ignores the same URL in popstate', () => {
   let events = listen()
 
   changePath('/?a=1')
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('detects clicks', () => {
@@ -121,9 +121,9 @@ test('detects clicks', () => {
   let events = listen()
 
   createTag(document.body, 'a', { href: '/?a=2' }).click()
-  equal(store.get(), { a: '2' })
-  equal(events, [{ a: '2' }])
   equal(location.toString(), 'http://localhost/?a=2')
+  deepStrictEqual(store.get(), { a: '2' })
+  deepStrictEqual(events, [{ a: '2' }])
 })
 
 test('ignores clicks detection on request', () => {
@@ -132,8 +132,8 @@ test('ignores clicks detection on request', () => {
   let events = listen(otherStore)
 
   createTag(document.body, 'a', { href: '/page?a=2' }).click()
-  equal(store.get(), { a: '1' })
-  equal(events, [])
+  deepStrictEqual(store.get(), { a: '1' })
+  deepStrictEqual(events, [])
 })
 
 test('accepts click on tag inside link', () => {
@@ -142,8 +142,8 @@ test('accepts click on tag inside link', () => {
 
   let link = createTag(document.body, 'a', { href: '/?a=2' })
   createTag(link, 'span').click()
-  equal(store.get(), { a: '2' })
   equal(location.toString(), 'http://localhost/?a=2')
+  deepStrictEqual(store.get(), { a: '2' })
 })
 
 test('ignore non-link clicks', () => {
@@ -151,7 +151,7 @@ test('ignore non-link clicks', () => {
   listen()
 
   createTag(document.body, 'span', { href: '/page?a=2' }).click()
-  equal(store.get(), { a: '1' })
+  deepStrictEqual(store.get(), { a: '1' })
 })
 
 test('ignores new-tab links', () => {
@@ -161,7 +161,7 @@ test('ignores new-tab links', () => {
   let link = createTag(document.body, 'a', { href: '/?a=2', target: '_blank' })
   link.click()
 
-  equal(store.get(), { a: '1' })
+  deepStrictEqual(store.get(), { a: '1' })
 })
 
 test('ignores external links', () => {
@@ -171,8 +171,8 @@ test('ignores external links', () => {
   let link = createTag(document.body, 'a', { href: 'http://lacalhast/?a=2' })
   link.click()
 
-  equal(store.get(), { a: '1' })
-  equal(events, [])
+  deepStrictEqual(store.get(), { a: '1' })
+  deepStrictEqual(events, [])
 })
 
 test('ignores the same URL in link', () => {
@@ -182,7 +182,7 @@ test('ignores the same URL in link', () => {
   let link = createTag(document.body, 'a', { href: '/posts?a=1' })
   link.click()
 
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('respects target self', () => {
@@ -192,7 +192,7 @@ test('respects target self', () => {
   let link = createTag(document.body, 'a', { href: '/?a=2', target: '_self' })
   link.click()
 
-  equal(store.get(), { a: '1' })
+  deepStrictEqual(store.get(), { a: '1' })
 })
 
 test('respects external rel', () => {
@@ -205,7 +205,7 @@ test('respects external rel', () => {
   })
   link.click()
 
-  equal(store.get(), { a: '1' })
+  deepStrictEqual(store.get(), { a: '1' })
 })
 
 test('respects download attribute', () => {
@@ -218,7 +218,7 @@ test('respects download attribute', () => {
   })
   link.click()
 
-  equal(store.get(), { a: '1' })
+  deepStrictEqual(store.get(), { a: '1' })
 })
 
 test('opens URLs manually', () => {
@@ -227,13 +227,13 @@ test('opens URLs manually', () => {
 
   store.open({ a: '2' })
   equal(location.href, 'http://localhost/page?a=2#hash')
-  equal(store.get(), { a: '2' })
-  equal(events, [{ a: '2' }])
+  deepStrictEqual(store.get(), { a: '2' })
+  deepStrictEqual(events, [{ a: '2' }])
 
   store.open({ a: 3 })
   equal(location.href, 'http://localhost/page?a=3#hash')
-  equal(store.get(), { a: '3' })
-  equal(events, [{ a: '2' }, { a: '3' }])
+  deepStrictEqual(store.get(), { a: '3' })
+  deepStrictEqual(events, [{ a: '2' }, { a: '3' }])
 })
 
 test('opens empty params manually', () => {
@@ -242,8 +242,8 @@ test('opens empty params manually', () => {
 
   store.open({})
   equal(location.href, 'http://localhost/page')
-  equal(store.get(), {})
-  equal(events, [{}])
+  deepStrictEqual(store.get(), {})
+  deepStrictEqual(events, [{}])
 })
 
 test('opens URLs manually with state replacing', () => {
@@ -253,7 +253,7 @@ test('opens URLs manually with state replacing', () => {
   store.open({ a: '2' }, true)
   equal(history.length - start, 2)
   equal(location.href, 'http://localhost/?a=2')
-  equal(store.get(), { a: '2' })
+  deepStrictEqual(store.get(), { a: '2' })
 })
 
 test('ignores the same URL in manual URL', () => {
@@ -261,10 +261,10 @@ test('ignores the same URL in manual URL', () => {
   let events = listen()
 
   store.open({ a: '1' })
-  equal(events, [])
+  deepStrictEqual(events, [])
 
   store.open({ a: 1 })
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
 
 test('supports link with hash in URL and different path', () => {
@@ -274,7 +274,5 @@ test('supports link with hash in URL and different path', () => {
   let link = createTag(document.body, 'a', { href: '/posts?a=1#hash' })
   link.click()
 
-  equal(events, [])
+  deepStrictEqual(events, [])
 })
-
-test.run()
