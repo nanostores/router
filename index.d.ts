@@ -17,8 +17,8 @@ type PathToParams<PathArray, Params = {}> = PathArray extends [
   ? First extends `:${infer Param}`
     ? // eslint-disable-next-line @typescript-eslint/no-shadow
       First extends `:${infer Param}?`
-      ? PathToParams<Rest, Params & Partial<Record<Param, string | number>>>
-      : PathToParams<Rest, Params & Record<Param, string | number>>
+      ? PathToParams<Rest, Params & Partial<Record<Param, string>>>
+      : PathToParams<Rest, Params & Record<Param, string>>
     : PathToParams<Rest, Params>
   : Params
 
@@ -41,6 +41,11 @@ type ParamsFromConfig<K extends RouterConfig> = {
     : never
 }
 
+// Converting string params to string | number
+type Input<T> = {
+  [P in keyof T]: string | number
+}
+
 type MappedC<A, B> = {
   [K in keyof A & keyof B]: A[K] extends B[K] ? never : K
 }
@@ -54,8 +59,8 @@ export type ParamsArg<
   : keyof ParamsFromConfig<Config>[PageName] extends OptionalKeys<
       ParamsFromConfig<Config>[PageName]
     >
-  ? [ParamsFromConfig<Config>[PageName]?]
-  : [ParamsFromConfig<Config>[PageName]]
+  ? [Input<ParamsFromConfig<Config>[PageName]>?]
+  : [Input<ParamsFromConfig<Config>[PageName]>]
 
 type Pattern<RouteParams> = Readonly<
   [RegExp, (...parts: string[]) => RouteParams]
