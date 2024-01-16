@@ -30,7 +30,7 @@
     "./package.json": "./package.json"
   },
   "engines": {
-    "node": "^16.0.0 || ^18.0.0 || >=20.0.0"
+    "node": "^18.0.0 || >=20.0.0"
   },
   "funding": [
     {
@@ -57,7 +57,7 @@
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-prefer-let": "^3.0.1",
     "eslint-plugin-promise": "^6.1.1",
-    "jsdom": "^22.1.0",
+    "jsdom": "^23.2.0",
     "nanostores": "^0.9.5",
     "size-limit": "^11.0.2",
     "tsm": "^2.3.0",
