@@ -24,8 +24,8 @@ devDependencies:
     specifier: ^6.19.0
     version: 6.19.0(eslint@8.56.0)(typescript@5.3.3)
   better-node-test:
-    specifier: ^0.4.1
-    version: 0.4.1
+    specifier: ^0.5.0
+    version: 0.5.0
   c8:
     specifier: ^9.1.0
     version: 9.1.0
@@ -762,9 +762,9 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
 
-  /better-node-test@0.4.1:
-    resolution: {integrity: sha512-fJao5ZmcR8gKMOoVKOFrri4CmigDiwDXZn/57PkO8f4oSxAj8CFhiea1BCxLT6mrdRIkHsPrjfe+Y1FT5dBl/g==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  /better-node-test@0.5.0:
+    resolution: {integrity: sha512-vi/IH5ss2lkKQzBi8PmyUXiiSWMDbYXTi7A7e40fvQNNKgQbI2kxNi9+HZ5Uv7CB6GmCEytfwJc2Kwgh3722lg==}
+    engines: {node: ^18.19.0 || >=20.0.0}
     hasBin: true
     dev: true
 
