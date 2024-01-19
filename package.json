@@ -1,7 +1,7 @@
 {
   "name": "@nanostores/router",
   "version": "0.12.1",
-  "description": "A tiny (675 bytes) router for Nano Stores state manager",
+  "description": "A tiny (673 bytes) router for Nano Stores state manager",
   "keywords": [
     "nano",
     "router",
@@ -44,7 +44,7 @@
     "@logux/eslint-config": "^52.0.2",
     "@size-limit/preset-small-lib": "^11.0.2",
     "@types/jsdom": "^21.1.6",
-    "@types/node": "^20.11.4",
+    "@types/node": "^20.11.5",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
     "better-node-test": "^0.5.0",
@@ -101,7 +101,7 @@
       "import": {
         "./index.js": "{ createRouter }"
       },
-      "limit": "675 B"
+      "limit": "673 B"
     },
     {
       "name": "Search Params",
