@@ -66,6 +66,16 @@ type Pattern<RouteParams> = Readonly<
   [RegExp, (...parts: string[]) => RouteParams]
 >
 
+export type InputPage<
+  Config extends RouterConfig = RouterConfig,
+  PageName extends keyof Config = any
+> = PageName extends any
+  ? {
+      params: Input<ParamsFromConfig<Config>[PageName]>
+      route: PageName
+    }
+  : never
+
 export type Page<
   Config extends RouterConfig = RouterConfig,
   PageName extends keyof Config = any
@@ -159,6 +169,10 @@ export function openPage<
   name: PageName,
   ...params: ParamsArg<Config, PageName>
 ): void
+export function openPage<
+  Config extends RouterConfig,
+  PageName extends keyof Config
+>(router: Router<Config>, route: InputPage<Config, PageName>): void
 
 /**
  * Open page by name and parameters. Replaces recent state in history.
@@ -182,6 +196,10 @@ export function redirectPage<
   name: PageName,
   ...params: ParamsArg<Config, PageName>
 ): void
+export function redirectPage<
+  Config extends RouterConfig,
+  PageName extends keyof Config
+>(router: Router<Config>, route: InputPage<Config, PageName>): void
 
 /**
  * Generates pathname by name and parameters. Useful to render links.
@@ -204,6 +222,10 @@ export function getPagePath<
   name: PageName,
   ...params: ParamsArg<Config, PageName>
 ): string
+export function getPagePath<
+  Config extends RouterConfig,
+  PageName extends keyof Config
+>(router: Router<Config>, route: InputPage<Config, PageName>): string
 
 export interface SearchParamsOptions {
   links?: boolean

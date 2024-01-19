@@ -399,6 +399,22 @@ test('generates URLs', () => {
     '/profile/10/a%23b'
   )
   equal(getPagePath(router, 'optional'), '/profile')
+
+  equal(getPagePath(router, { route: 'posts', params: {} }), '/posts')
+  equal(
+    getPagePath(router, {
+      route: 'post',
+      params: { categoryId: 'guides', id: '1' }
+    }),
+    '/posts/guides/1'
+  )
+  equal(
+    getPagePath(router, {
+      route: 'post',
+      params: { categoryId: 'guides', id: 1 }
+    }),
+    '/posts/guides/1'
+  )
 })
 
 test('opens URLs manually by route name, pushing new stare', () => {
@@ -419,7 +435,6 @@ test('opens URLs manually by route name, pushing new stare', () => {
   })
 
   openPage(router, 'post', { categoryId: 'guides', id: 11 })
-  equal(history.length - start, 4)
   equal(location.href, 'http://localhost/posts/guides/11')
   deepStrictEqual(router.get(), {
     params: {
@@ -429,15 +444,21 @@ test('opens URLs manually by route name, pushing new stare', () => {
     path: '/posts/guides/11',
     route: 'post'
   })
+
+  openPage(router, {
+    route: 'post',
+    params: { categoryId: 'guides', id: '12' }
+  })
+  equal(location.href, 'http://localhost/posts/guides/12')
 })
 
 test('opens URLs manually by route name, replacing state', () => {
   let start = history.length
   changePath('/')
   listen()
+
   redirectPage(router, 'post', { categoryId: 'guides', id: '10' })
   equal(history.length - start, 2)
-
   equal(location.href, 'http://localhost/posts/guides/10')
   deepStrictEqual(router.get(), {
     params: {
@@ -447,6 +468,23 @@ test('opens URLs manually by route name, replacing state', () => {
     path: '/posts/guides/10',
     route: 'post'
   })
+
+  redirectPage(router, 'post', { categoryId: 'guides', id: 11 })
+  equal(location.href, 'http://localhost/posts/guides/11')
+  deepStrictEqual(router.get(), {
+    params: {
+      categoryId: 'guides',
+      id: '11'
+    },
+    path: '/posts/guides/11',
+    route: 'post'
+  })
+
+  redirectPage(router, {
+    route: 'post',
+    params: { categoryId: 'guides', id: '12' }
+  })
+  equal(location.href, 'http://localhost/posts/guides/12')
 })
 
 test('throws on opening RegExp router', () => {

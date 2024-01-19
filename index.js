@@ -117,6 +117,10 @@ export function createRouter(routes, opts = {}) {
 }
 
 export function getPagePath(router, name, params) {
+  if (typeof name === 'object') {
+    params = name.params
+    name = name.route
+  }
   let route = router.routes.find(i => i[0] === name)
   if (process.env.NODE_ENV !== 'production') {
     if (!route[3]) throw new Error('RegExp routes are not supported')

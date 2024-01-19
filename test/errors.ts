@@ -29,11 +29,13 @@ openPage(router, 'post', { id: '1', category: 'guides' })
 // THROWS Expected 2 arguments, but got 3
 openPage(router, 'home', { id: '1' })
 
-// THROWS Expected 3 arguments, but got 2.
+// THROWS Argument of type 'string' is not assignable to parameter of type
 openPage(router, 'post')
 
 // THROWS 'category' does not exist in type 'Input<Record<"id"
 redirectPage(router, 'post', { id: '1', category: 'guides' })
+// THROWS No overload matches this call
+redirectPage(router, { route: 'post', params: { category: 'guides' } })
 // THROWS Expected 2 arguments, but got 3
 redirectPage(router, 'home', { id: '1' })
 
