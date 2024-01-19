@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.13
+* Added page object support in `getPagePath`, `openPage`, and `redirectPage`.
+
 ## 0.12.1
 * Fixed parameter output type regression.
 
