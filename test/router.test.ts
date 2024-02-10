@@ -84,7 +84,8 @@ test('parses current location', () => {
       id: '10'
     },
     path: '/posts/guides/10',
-    route: 'post'
+    route: 'post',
+    search: {}
   })
 })
 
@@ -96,7 +97,8 @@ test('ignores last slash', () => {
       id: '10'
     },
     path: '/posts/guides/10',
-    route: 'post'
+    route: 'post',
+    search: {}
   })
 })
 
@@ -112,7 +114,8 @@ test('escapes RegExp symbols in routes', () => {
       id: '9'
     },
     path: '/[secret]/9',
-    route: 'secret'
+    route: 'secret',
+    search: {}
   })
 })
 
@@ -124,7 +127,8 @@ test('converts URL-encoded symbols', () => {
       id: '10'
     },
     path: '/posts/a%23b/10',
-    route: 'post'
+    route: 'post',
+    search: {}
   })
 })
 
@@ -133,7 +137,8 @@ test('ignores hash and search', () => {
   deepStrictEqual(router.get(), {
     params: {},
     path: '/posts',
-    route: 'posts'
+    route: 'posts',
+    search: { id: '1' }
   })
 })
 
@@ -142,7 +147,8 @@ test('ignores case', () => {
   deepStrictEqual(router.get(), {
     params: {},
     path: '/POSTS',
-    route: 'posts'
+    route: 'posts',
+    search: {}
   })
 })
 
@@ -154,7 +160,8 @@ test('parameters can be optional', () => {
       tab: ''
     },
     path: '/profile',
-    route: 'optional'
+    route: 'optional',
+    search: {}
   })
 
   changePath('/profile/10/')
@@ -164,7 +171,8 @@ test('parameters can be optional', () => {
       tab: ''
     },
     path: '/profile/10',
-    route: 'optional'
+    route: 'optional',
+    search: {}
   })
 
   changePath('/profile/10/contacts')
@@ -174,7 +182,8 @@ test('parameters can be optional', () => {
       tab: 'contacts'
     },
     path: '/profile/10/contacts',
-    route: 'optional'
+    route: 'optional',
+    search: {}
   })
 })
 
@@ -183,7 +192,12 @@ test('detects URL changes', () => {
   let events = listen()
 
   changePath('/')
-  deepStrictEqual(router.get(), { params: {}, path: '/', route: 'home' })
+  deepStrictEqual(router.get(), {
+    params: {},
+    path: '/',
+    route: 'home',
+    search: {}
+  })
   deepStrictEqual(events, ['/'])
 })
 
@@ -208,11 +222,12 @@ test('detects clicks', () => {
   changePath('/')
   let events = listen()
 
-  createTag(document.body, 'a', { href: '/posts' }).click()
+  createTag(document.body, 'a', { href: '/posts?a=1' }).click()
   deepStrictEqual(router.get(), {
     params: {},
     path: '/posts',
-    route: 'posts'
+    route: 'posts',
+    search: { a: '1' }
   })
   deepStrictEqual(events, ['/posts'])
 })
@@ -234,7 +249,8 @@ test('disables clicks detects on request', () => {
   deepStrictEqual(router.get(), {
     params: {},
     path: '/',
-    route: 'home'
+    route: 'home',
+    search: {}
   })
   deepStrictEqual(events, [])
 })
@@ -351,12 +367,13 @@ test('opens URLs manually', () => {
   changePath('/posts/guides/10/')
   let events = listen()
 
-  router.open('/posts/')
-  equal(location.href, 'http://localhost/posts/')
+  router.open('/posts/?a=1')
+  equal(location.href, 'http://localhost/posts/?a=1')
   deepStrictEqual(router.get(), {
     params: {},
     path: '/posts',
-    route: 'posts'
+    route: 'posts',
+    search: { a: '1' }
   })
   deepStrictEqual(events, ['/posts'])
 })
@@ -374,13 +391,15 @@ test('allows RegExp routes', () => {
   deepStrictEqual(router.get(), {
     params: { id: '10', type: 'draft' },
     path: '/posts/draft/10',
-    route: 'draft'
+    route: 'draft',
+    search: {}
   })
 })
 
 test('generates URLs', () => {
   equal(getPagePath(router, 'home'), '/')
   equal(getPagePath(router, 'posts'), '/posts')
+  equal(getPagePath(router, 'posts', {}, { a: '1' }), '/posts?a=1')
   equal(
     getPagePath(router, 'post', { categoryId: 'guides', id: '1' }),
     '/posts/guides/1'
@@ -388,6 +407,15 @@ test('generates URLs', () => {
   equal(
     getPagePath(router, 'post', { categoryId: 'guides', id: 1 }),
     '/posts/guides/1'
+  )
+  equal(
+    getPagePath(
+      router,
+      'post',
+      { categoryId: 'guides', id: 1 },
+      { a: 1, b: 2 }
+    ),
+    '/posts/guides/1?a=1&b=2'
   )
   equal(
     getPagePath(router, 'post', { categoryId: 'a#b', id: '1' }),
@@ -401,6 +429,10 @@ test('generates URLs', () => {
   equal(getPagePath(router, 'optional'), '/profile')
 
   equal(getPagePath(router, { route: 'posts', params: {} }), '/posts')
+  equal(
+    getPagePath(router, { route: 'posts', params: {} }, { a: 1 }),
+    '/posts?a=1'
+  )
   equal(
     getPagePath(router, {
       route: 'post',
@@ -431,7 +463,8 @@ test('opens URLs manually by route name, pushing new stare', () => {
       id: '10'
     },
     path: '/posts/guides/10',
-    route: 'post'
+    route: 'post',
+    search: {}
   })
 
   openPage(router, 'post', { categoryId: 'guides', id: 11 })
@@ -442,7 +475,8 @@ test('opens URLs manually by route name, pushing new stare', () => {
       id: '11'
     },
     path: '/posts/guides/11',
-    route: 'post'
+    route: 'post',
+    search: {}
   })
 
   openPage(router, {
@@ -450,6 +484,16 @@ test('opens URLs manually by route name, pushing new stare', () => {
     params: { categoryId: 'guides', id: '12' }
   })
   equal(location.href, 'http://localhost/posts/guides/12')
+
+  openPage(
+    router,
+    {
+      route: 'post',
+      params: { categoryId: 'guides', id: '12' }
+    },
+    { sort: 'name' }
+  )
+  equal(location.href, 'http://localhost/posts/guides/12?sort=name')
 })
 
 test('opens URLs manually by route name, replacing state', () => {
@@ -466,7 +510,8 @@ test('opens URLs manually by route name, replacing state', () => {
       id: '10'
     },
     path: '/posts/guides/10',
-    route: 'post'
+    route: 'post',
+    search: {}
   })
 
   redirectPage(router, 'post', { categoryId: 'guides', id: 11 })
@@ -477,7 +522,8 @@ test('opens URLs manually by route name, replacing state', () => {
       id: '11'
     },
     path: '/posts/guides/11',
-    route: 'post'
+    route: 'post',
+    search: {}
   })
 
   redirectPage(router, {
@@ -485,6 +531,18 @@ test('opens URLs manually by route name, replacing state', () => {
     params: { categoryId: 'guides', id: '12' }
   })
   equal(location.href, 'http://localhost/posts/guides/12')
+
+  redirectPage(
+    router,
+    {
+      route: 'post',
+      params: { categoryId: 'guides', id: '12' }
+    },
+    {
+      sort: 'name'
+    }
+  )
+  equal(location.href, 'http://localhost/posts/guides/12?sort=name')
 })
 
 test('throws on opening RegExp router', () => {
@@ -561,7 +619,8 @@ test('uses search query on request', () => {
   deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/p?page=a',
-    route: 'a'
+    route: 'a',
+    search: { page: 'a' }
   })
 
   let link = createTag(document.body, 'a', { href: '/p?page=b' })
@@ -569,21 +628,26 @@ test('uses search query on request', () => {
   deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/p?page=b',
-    route: 'b'
+    route: 'b',
+    search: { page: 'b' }
   })
 
   changePath('/p?page=a')
   deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/p?page=a',
-    route: 'a'
+    route: 'a',
+    search: { page: 'a' }
   })
 
   changePath('/p/?page=b')
   deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/p?page=b',
-    route: 'b'
+    route: 'b',
+    search: {
+      page: 'b'
+    }
   })
 })
 
@@ -598,7 +662,8 @@ test('supports dot in URL', () => {
   deepStrictEqual(otherRouter.get(), {
     params: {},
     path: '/page.txt',
-    route: 'text'
+    route: 'text',
+    search: {}
   })
 
   changePath('/page.html')

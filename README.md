@@ -6,7 +6,7 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-* **Small.** 673 bytes (minified and brotlied). Zero dependencies.
+* **Small.** 685 bytes (minified and brotlied). Zero dependencies.
 * Good **TypeScript** support.
 * Framework agnostic. Can be used with **React**, **Preact**, **Vue**,
   **Svelte**, **Angular**, **Solid.js**, and vanilla JS.
@@ -20,8 +20,8 @@ import { createRouter } from '@nanostores/router'
 
 export const $router = createRouter({
   home: '/',
-  category: '/posts/:categoryId',
-  post: '/posts/:categoryId/:postId'
+  list: '/posts/:category',
+  post: '/posts/:category/:post'
 })
 ```
 
@@ -41,10 +41,10 @@ export const Layout = () => {
     return <Error404 />
   } else if (page.route === 'home') {
     return <HomePage />
-  } else if (page.route === 'category') {
-    return <CategoryPage categoryId={page.params.categoryId} />
+  } else if (page.route === 'list') {
+    return <ListPage category={page.params.category} filters={page.search} />
   } else if (page.route === 'post') {
-    return <PostPage postId={page.params.postId} />
+    return <PostPage post={page.params.post} />
   }
 }
 ```
@@ -112,7 +112,19 @@ createRouter({
 ```
 
 
-### Search query routing
+### Search Query Routing
+
+Router value contains parsed `?a=1&b=2` search values:
+
+```js
+location.href = '/posts/general?sort=name'
+router.get() //=> {
+//                   path: '/posts/category',
+//                   route: 'list',
+//                   params: { category: 'general' },
+//                   search: { sort: 'name' }
+//                 }
+```
 
 To use search query like `?a=1&b=2` in routes you need to set `search` option:
 
@@ -127,33 +139,6 @@ createRouter({
 Router will works with `?search` part as a string. Parameters order will
 be critical.
 
-There is another store to watch for `?search` parameters separately.
-It can be useful where `?search` is used only as sub-routes for specific page.
-For instance, for filters settings on search page.
-
-```js
-// stores/searchParams.ts
-import { createSearchParams } from '@nanostores/router'
-
-export const $searchParams = createSearchParams()
-```
-
-```js
-// stores/searchResult.ts
-import { $searchParams } from '../searchParams'
-
-export const $searchResult = atom([])
-
-onMount($searchResult, () => {
-  return $searchParams.subscribe(params => {
-    $searchResult.set(await search(params))
-  })
-})
-
-function changeSearchParam(key: 'sort' | 'filter', value: string) {
-  $searchParams.open({ ...$searchParams.get(), [key]: value })
-}
-```
 
 ### Clicks Tracking
 
@@ -194,7 +179,7 @@ to use the router as a single place of truth.
 import { getPagePath } from '@nanostores/router'
 
 …
-  <a href={getPagePath($router, 'post', { categoryId: 'guides', id: '10' })}>
+  <a href={getPagePath($router, 'post', { category: 'guides', post: '10' })}>
 ```
 
 If you need to change URL programmatically you can use `openPage`
@@ -211,6 +196,13 @@ function onLoginSuccess() {
   // Replace login route, so we don’t face it on back navigation
   redirectPage($router, 'home')
 }
+```
+
+All functions accept search params as last argument:
+
+```tsx
+getPagePath($router, 'list', { category: 'guides' }, { sort: 'name' })
+//=> '/posts/guides?sort=name'
 ```
 
 

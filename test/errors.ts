@@ -24,19 +24,25 @@ router.subscribe(page => {
   console.log(page.route)
 })
 
-// THROWS 'category' does not exist in type 'Input<Record<"id"
+// THROWS No overload matches this call.
 openPage(router, 'post', { id: '1', category: 'guides' })
-// THROWS Expected 2 arguments, but got 3
+// THROWS No overload matches this call.
 openPage(router, 'home', { id: '1' })
+
+// THROWS Type 'boolean' is not assignable to type 'string | number'.
+openPage(router, 'home', {}, { search: false })
+
+// THROWS No overload matches this call.
+openPage(router, { route: 'home', params: {} }, { search: false })
 
 // THROWS Argument of type 'string' is not assignable to parameter of type
 openPage(router, 'post')
 
-// THROWS 'category' does not exist in type 'Input<Record<"id"
+// THROWS No overload matches this call.
 redirectPage(router, 'post', { id: '1', category: 'guides' })
 // THROWS No overload matches this call
 redirectPage(router, { route: 'post', params: { category: 'guides' } })
-// THROWS Expected 2 arguments, but got 3
+// THROWS No overload matches this call.
 redirectPage(router, 'home', { id: '1' })
 
 // THROWS Property 'set' does not exist on type

@@ -16,6 +16,7 @@ router.subscribe(page => {
     openPage(router, 'post', { id: '1' })
     openPage(router, 'post', { id: 1 })
     openPage(router, 'home')
+    openPage(router, 'home', {})
     openPage(router, 'profile')
     openPage(router, 'profile', {})
     openPage(router, 'profile', { userId: '123' })

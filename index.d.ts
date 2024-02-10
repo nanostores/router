@@ -51,16 +51,20 @@ type MappedC<A, B> = {
 }
 type OptionalKeys<T> = MappedC<T, Required<T>>[keyof T]
 
+type EmptyObject = Record<string, never>
+
+type SearchParams = Record<string, string | number>
+
 export type ParamsArg<
   Config extends RouterConfig,
   PageName extends keyof Config
 > = keyof ParamsFromConfig<Config>[PageName] extends never
-  ? []
+  ? [EmptyObject?, SearchParams?]
   : keyof ParamsFromConfig<Config>[PageName] extends OptionalKeys<
       ParamsFromConfig<Config>[PageName]
     >
-  ? [Input<ParamsFromConfig<Config>[PageName]>?]
-  : [Input<ParamsFromConfig<Config>[PageName]>]
+  ? [Input<ParamsFromConfig<Config>[PageName]>?, SearchParams?]
+  : [Input<ParamsFromConfig<Config>[PageName]>, SearchParams?]
 
 type Pattern<RouteParams> = Readonly<
   [RegExp, (...parts: string[]) => RouteParams]
@@ -84,6 +88,7 @@ export type Page<
       params: ParamsFromConfig<Config>[PageName]
       path: string
       route: PageName
+      search: Record<string, string>
     }
   : never
 
@@ -172,7 +177,11 @@ export function openPage<
 export function openPage<
   Config extends RouterConfig,
   PageName extends keyof Config
->(router: Router<Config>, route: InputPage<Config, PageName>): void
+>(
+  router: Router<Config>,
+  route: InputPage<Config, PageName>,
+  search?: SearchParams
+): void
 
 /**
  * Open page by name and parameters. Replaces recent state in history.
@@ -199,7 +208,11 @@ export function redirectPage<
 export function redirectPage<
   Config extends RouterConfig,
   PageName extends keyof Config
->(router: Router<Config>, route: InputPage<Config, PageName>): void
+>(
+  router: Router<Config>,
+  route: InputPage<Config, PageName>,
+  search?: SearchParams
+): void
 
 /**
  * Generates pathname by name and parameters. Useful to render links.
@@ -225,44 +238,8 @@ export function getPagePath<
 export function getPagePath<
   Config extends RouterConfig,
   PageName extends keyof Config
->(router: Router<Config>, route: InputPage<Config, PageName>): string
-
-export interface SearchParamsOptions {
-  links?: boolean
-}
-
-/**
- * Store to watch for `?search` URL part changes.
- *
- * It will track history API and clicks on page’s links.
- */
-export interface SearchParamsStore
-  extends ReadableAtom<Record<string, string>> {
-  /**
-   * Change `?search` URL part and update store value.
-   *
-   * ```js
-   * searchParams.open({ sort: 'name', type: 'small' })
-   * ```
-   *
-   * @param path Absolute URL (`https://example.com/a`)
-   *             or domain-less URL (`/a`).
-   * @param redirect Don’t add entry to the navigation history.
-   */
-  open(params: Record<string, string | number>, redirect?: boolean): void
-}
-
-/**
- * Create {@link SearchParamsStore} store to watch for `?search` URL part.
- *
- * ```js
- * import { createSearchParams } from 'nanostores'
- *
- * export const searchParams = createSearchParams()
- * ```
- *
- * @param opts Options.
- */
-export function createSearchParams(
-  opts?: SearchParamsOptions
-): SearchParamsStore
+>(
+  router: Router<Config>,
+  route: InputPage<Config, PageName>,
+  search?: SearchParams
+): string
