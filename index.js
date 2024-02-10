@@ -138,7 +138,8 @@ export function getPagePath(router, name, params, search) {
     .replace(/\/:\w+/g, i => '/' + encodeURIComponent(params[i.slice(2)]))
   let postfix = ''
   if (search) {
-    postfix = '?' + new URLSearchParams(search)
+    postfix = '' + new URLSearchParams(search)
+    if (postfix) postfix = '?' + postfix
   }
   return (path || '/') + postfix
 }

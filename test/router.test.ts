@@ -402,6 +402,7 @@ test('generates URLs', () => {
   equal(getPagePath(router, { route: 'home' }), '/')
   equal(getPagePath(router, 'posts'), '/posts')
   equal(getPagePath(router, 'posts', {}, { a: '1' }), '/posts?a=1')
+  equal(getPagePath(router, 'posts', {}, {}), '/posts')
   equal(
     getPagePath(router, 'post', { categoryId: 'guides', id: '1' }),
     '/posts/guides/1'
