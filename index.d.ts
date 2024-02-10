@@ -74,10 +74,15 @@ export type InputPage<
   Config extends RouterConfig = RouterConfig,
   PageName extends keyof Config = any
 > = PageName extends any
-  ? {
-      params: Input<ParamsFromConfig<Config>[PageName]>
-      route: PageName
-    }
+  ? Input<ParamsFromConfig<Config>[PageName]> extends EmptyObject
+    ? {
+        params?: Input<ParamsFromConfig<Config>[PageName]>
+        route: PageName
+      }
+    : {
+        params: Input<ParamsFromConfig<Config>[PageName]>
+        route: PageName
+      }
   : never
 
 export type Page<

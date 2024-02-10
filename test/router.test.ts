@@ -398,6 +398,8 @@ test('allows RegExp routes', () => {
 
 test('generates URLs', () => {
   equal(getPagePath(router, 'home'), '/')
+  equal(getPagePath(router, 'home', {}), '/')
+  equal(getPagePath(router, { route: 'home' }), '/')
   equal(getPagePath(router, 'posts'), '/posts')
   equal(getPagePath(router, 'posts', {}, { a: '1' }), '/posts?a=1')
   equal(
