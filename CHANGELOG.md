@@ -1,6 +1,11 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.14.0
+* Added `search` with parsed search params to store’s value.
+* Added `search` argument to all functions to get and open URL.
+* Removed `createSearchParams` in favor of `route.search` of normal router.
+
 ## 0.13
 * Added page object support in `getPagePath`, `openPage`, and `redirectPage`.
 
