@@ -47,6 +47,12 @@ devDependencies:
   eslint-plugin-n:
     specifier: ^16.6.2
     version: 16.6.2(eslint@8.56.0)
+  eslint-plugin-node-import:
+    specifier: ^1.0.4
+    version: 1.0.4(eslint@8.56.0)
+  eslint-plugin-perfectionist:
+    specifier: ^2.5.0
+    version: 2.5.0(eslint@8.56.0)(typescript@5.3.3)
   eslint-plugin-prefer-let:
     specifier: ^3.0.1
     version: 3.0.1
