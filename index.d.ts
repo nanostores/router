@@ -43,7 +43,7 @@ type ParamsFromConfig<K extends RouterConfig> = {
 
 // Converting string params to string | number
 type Input<T> = {
-  [P in keyof T]: string | number
+  [P in keyof T]: number | string
 }
 
 type MappedC<A, B> = {
@@ -53,7 +53,7 @@ type OptionalKeys<T> = MappedC<T, Required<T>>[keyof T]
 
 type EmptyObject = Record<string, never>
 
-type SearchParams = Record<string, string | number>
+type SearchParams = Record<string, number | string>
 
 export type ParamsArg<
   Config extends RouterConfig,

@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom'
 import { cleanStores } from 'nanostores'
-import { test, afterEach } from 'node:test'
-import { deepStrictEqual, throws, equal } from 'node:assert'
+import { deepStrictEqual, equal, throws } from 'node:assert'
+import { afterEach, test } from 'node:test'
 
 import {
   createRouter,
@@ -431,22 +431,22 @@ test('generates URLs', () => {
   )
   equal(getPagePath(router, 'optional'), '/profile')
 
-  equal(getPagePath(router, { route: 'posts', params: {} }), '/posts')
+  equal(getPagePath(router, { params: {}, route: 'posts' }), '/posts')
   equal(
-    getPagePath(router, { route: 'posts', params: {} }, { a: 1 }),
+    getPagePath(router, { params: {}, route: 'posts' }, { a: 1 }),
     '/posts?a=1'
   )
   equal(
     getPagePath(router, {
-      route: 'post',
-      params: { categoryId: 'guides', id: '1' }
+      params: { categoryId: 'guides', id: '1' },
+      route: 'post'
     }),
     '/posts/guides/1'
   )
   equal(
     getPagePath(router, {
-      route: 'post',
-      params: { categoryId: 'guides', id: 1 }
+      params: { categoryId: 'guides', id: 1 },
+      route: 'post'
     }),
     '/posts/guides/1'
   )
@@ -483,16 +483,16 @@ test('opens URLs manually by route name, pushing new stare', () => {
   })
 
   openPage(router, {
-    route: 'post',
-    params: { categoryId: 'guides', id: '12' }
+    params: { categoryId: 'guides', id: '12' },
+    route: 'post'
   })
   equal(location.href, 'http://localhost/posts/guides/12')
 
   openPage(
     router,
     {
-      route: 'post',
-      params: { categoryId: 'guides', id: '12' }
+      params: { categoryId: 'guides', id: '12' },
+      route: 'post'
     },
     { sort: 'name' }
   )
@@ -530,16 +530,16 @@ test('opens URLs manually by route name, replacing state', () => {
   })
 
   redirectPage(router, {
-    route: 'post',
-    params: { categoryId: 'guides', id: '12' }
+    params: { categoryId: 'guides', id: '12' },
+    route: 'post'
   })
   equal(location.href, 'http://localhost/posts/guides/12')
 
   redirectPage(
     router,
     {
-      route: 'post',
-      params: { categoryId: 'guides', id: '12' }
+      params: { categoryId: 'guides', id: '12' },
+      route: 'post'
     },
     {
       sort: 'name'

@@ -1,6 +1,6 @@
 import { cleanStores } from 'nanostores'
-import { test, afterEach } from 'node:test'
 import { deepStrictEqual } from 'node:assert'
+import { afterEach, test } from 'node:test'
 
 import { createRouter } from '../index.js'
 
