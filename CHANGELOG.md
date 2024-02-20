@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.14.1
+* Added Nano Stores 0.10 support.
+
 ## 0.14.0
 * Added `search` with parsed search params to store’s value.
 * Added `search` argument to all functions to get and open URL.
