@@ -38,15 +38,15 @@
     }
   ],
   "peerDependencies": {
-    "nanostores": "^0.9.0"
+    "nanostores": "^0.9.0 || ^0.10.0"
   },
   "devDependencies": {
     "@logux/eslint-config": "^52.0.2",
     "@size-limit/preset-small-lib": "^11.0.2",
     "@types/jsdom": "^21.1.6",
-    "@types/node": "^20.11.17",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
     "better-node-test": "^0.5.0",
     "c8": "^9.1.0",
     "check-dts": "^0.7.2",
@@ -60,7 +60,7 @@
     "eslint-plugin-prefer-let": "^3.0.1",
     "eslint-plugin-promise": "^6.1.1",
     "jsdom": "^24.0.0",
-    "nanostores": "^0.9.5",
+    "nanostores": "^0.10.0",
     "size-limit": "^11.0.2",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3"
