@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.14.2
+* Fixed `:param?` RegExp (by @easing).
+
 ## 0.14.1
 * Added Nano Stores 0.10 support.
 
