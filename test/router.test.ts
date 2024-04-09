@@ -185,6 +185,18 @@ test('parameters can be optional', () => {
     route: 'optional',
     search: {}
   })
+
+  changePath('/profile//')
+  deepStrictEqual(router.get(), undefined)
+
+  changePath('/profile///')
+  deepStrictEqual(router.get(), undefined)
+
+  changePath('/profile-missed-route')
+  deepStrictEqual(router.get(), undefined)
+
+  changePath('/profile/10/contacts/20')
+  deepStrictEqual(router.get(), undefined)
 })
 
 test('detects URL changes', () => {

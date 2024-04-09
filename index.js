@@ -9,14 +9,16 @@ export function createRouter(routes, opts = {}) {
       let names = value.match(/(?<=\/:)\w+/g) || []
       let pattern = value
         .replace(/[\s!#$()+,.:<=?[\\\]^{|}]/g, '\\$&')
-        .replace(/\/\\:\w+\\\?/g, '/?([^/]*)')
+        .replace(/\/\\:\w+\\\?/g, '(?:/((?<=/)[^/]+))?')
         .replace(/\/\\:\w+/g, '/([^/]+)')
       return [
         name,
         RegExp('^' + pattern + '$', 'i'),
         (...matches) =>
           matches.reduce((params, match, index) => {
-            params[names[index]] = decodeURIComponent(match)
+            // match === undefined when nothing captured in regexp group
+            // and we swap it with empty string for backward compatibility
+            params[names[index]] = match ? decodeURIComponent(match) : ''
             return params
           }, {}),
         value
