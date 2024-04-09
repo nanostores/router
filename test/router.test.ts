@@ -52,6 +52,7 @@ function createTag(
 let router = createRouter({
   draft: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ id, type })],
   home: '/',
+  named: /\/named\/(?<type>draft|new)\/(?<id>\d+)/,
   optional: '/profile/:id?/:tab?',
   post: '/posts/:categoryId/:id',
   posts: '/posts/',
@@ -398,12 +399,22 @@ test('ignores the same URL in manual URL', () => {
   deepStrictEqual(events, [])
 })
 
-test('allows RegExp routes', () => {
+test('allows RegExp routes with callback', () => {
   changePath('/posts/draft/10/')
   deepStrictEqual(router.get(), {
     params: { id: '10', type: 'draft' },
     path: '/posts/draft/10',
     route: 'draft',
+    search: {}
+  })
+})
+
+test('allows RegExp routes without callback', () => {
+  changePath('/named/draft/10/')
+  deepStrictEqual(router.get(), {
+    params: { id: '10', type: 'draft' },
+    path: '/named/draft/10',
+    route: 'named',
     search: {}
   })
 })
