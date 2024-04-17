@@ -77,7 +77,7 @@ Routes is an object of route’s name to route pattern:
 createRouter({
   route1: '/',
   route2: '/path/:var1/and/:var2',
-  route3: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ type, id })]
+  route3: /\/posts\/(?<type>draft|new)\/(?<id>\d+)/
 })
 ```
 
@@ -136,7 +136,7 @@ createRouter({
 })
 ```
 
-Router will works with `?search` part as a string. Parameters order will
+Router will work with `?search` part as a string. Parameters order will
 be critical.
 
 
