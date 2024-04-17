@@ -24,7 +24,7 @@ type PathToParams<PathArray, Params = {}> = PathArray extends [
 
 type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>>
 
-export type RouterConfig = Record<string, Pattern<any> | string>
+export type RouterConfig = Record<string, Pattern<any> | RegExp | string>
 
 export type ConfigFromRouter<SomeRouter> = SomeRouter extends Router<
   infer Config

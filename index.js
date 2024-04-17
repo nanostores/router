@@ -4,28 +4,24 @@ export function createRouter(routes, opts = {}) {
   let router = atom()
   router.routes = Object.keys(routes).map(name => {
     let value = routes[name]
-    if (typeof value === 'string') {
-      value = value.replace(/\/$/g, '') || '/'
-      let names = value.match(/(?<=\/:)\w+/g) || []
-      let pattern = value
-        .replace(/[\s!#$()+,.:<=?[\\\]^{|}]/g, '\\$&')
-        .replace(/\/\\:\w+\\\?/g, '(?:/((?<=/)[^/]+))?')
-        .replace(/\/\\:\w+/g, '/([^/]+)')
-      return [
-        name,
-        RegExp('^' + pattern + '$', 'i'),
-        (...matches) =>
-          matches.reduce((params, match, index) => {
-            // match === undefined when nothing captured in regexp group
-            // and we swap it with empty string for backward compatibility
-            params[names[index]] = match ? decodeURIComponent(match) : ''
-            return params
-          }, {}),
-        value
-      ]
-    } else {
-      return [name, ...value]
+
+    if (typeof value !== 'string') {
+      return [name, ...[value].flat()]
     }
+
+    value = value.replace(/\/$/g, '') || '/'
+
+    let pattern = value
+      .replace(/[\s!#$()+,.:<=?[\\\]^{|}]/g, '\\$&')
+      .replace(/\/\\:(\w+)\\\?/g, '(?:/(?<$1>(?<=/)[^/]+))?')
+      .replace(/\/\\:(\w+)/g, '/(?<$1>[^/]+)')
+
+    return [
+      name,
+      RegExp('^' + pattern + '$', 'i'),
+      null,
+      value
+    ];
   })
 
   let prev
@@ -37,12 +33,21 @@ export function createRouter(routes, opts = {}) {
     let url = new URL(path, 'http://a')
     if (!opts.search) path = url.pathname
 
-    let search = Object.fromEntries(url.searchParams)
-
-    for (let [route, pattern, cb] of router.routes) {
+    for (let [route, pattern, callback] of router.routes) {
       let match = path.match(pattern)
       if (match) {
-        return { params: cb(...match.slice(1)), path, route, search }
+        return {
+          // If route has callback for params decoding use it. Otherwise decode params from named capture groups
+          params: callback ? callback(...match.slice(1)) : Object.keys({...match.groups}).reduce((pars, key) => {
+            // match === undefined when nothing captured in regexp group
+            // and we swap it with empty string for backward compatibility
+            pars[key] = match.groups[key] ? decodeURIComponent(match.groups[key]) : '';
+            return pars
+          }, {}),
+          path,
+          route,
+          search: Object.fromEntries(url.searchParams)
+        }
       }
     }
   }
