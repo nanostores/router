@@ -117,7 +117,7 @@ createRouter({
 Router value contains parsed url search params:
 
 ```js
-createRouter({ home: '/posts/:category?sort=name' })
+createRouter({ home: '/posts/:category' })
 
 location.href = '/posts/general?sort=name'
 router.get() //=> {
