@@ -114,12 +114,14 @@ createRouter({
 
 ### Search Query Routing
 
-Router value contains parsed `?a=1&b=2` search values:
+Router value contains parsed url search params:
 
 ```js
+createRouter({ home: '/posts/:category' })
+
 location.href = '/posts/general?sort=name'
 router.get() //=> {
-//                   path: '/posts/category',
+//                   path: '/posts/general',
 //                   route: 'list',
 //                   params: { category: 'general' },
 //                   search: { sort: 'name' }
