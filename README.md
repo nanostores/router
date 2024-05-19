@@ -114,30 +114,34 @@ createRouter({
 
 ### Search Query Routing
 
-Router value contains parsed `?a=1&b=2` search values:
+Router value contains parsed url search params:
 
 ```js
+createRouter({ home: '/posts/:category?sort=name' })
+
 location.href = '/posts/general?sort=name'
 router.get() //=> {
-//                   path: '/posts/category',
+//                   path: '/posts/general',
 //                   route: 'list',
 //                   params: { category: 'general' },
 //                   search: { sort: 'name' }
 //                 }
 ```
 
-To use search query like `?a=1&b=2` in routes you need to set `search` option:
+To disable the automatic parsing of search params in routes you need to set `search` option.
+Router will now treat search query like `?a=1&b=2` as a string. Parameters order will be critical.
 
 ```js
-createRouter({
-  home: '/p/?page=home'
-}, {
-  search: true
-})
-```
+createRouter({ home: '/posts?page=general' }, { search: true })
 
-Router will work with `?search` part as a string. Parameters order will
-be critical.
+location.href = '/posts/?page=general'
+router.get() //=> {
+//                   path: '/posts?page=general',
+//                   route: 'list',
+//                   params: { },
+//                   search: { }
+//                 }
+```
 
 
 ### Clicks Tracking
