@@ -6,9 +6,9 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-* **Small.** 684 bytes (minified and brotlied). Zero dependencies.
-* Good **TypeScript** support.
-* Framework agnostic. Can be used with **React**, **Preact**, **Vue**,
+- **Small.** 684 bytes (minified and brotlied). Zero dependencies.
+- Good **TypeScript** support.
+- Framework agnostic. Can be used with **React**, **Preact**, **Vue**,
   **Svelte**, **Angular**, **Solid.js**, and vanilla JS.
 
 Since Nano Stores promote moving logic to store, the router is a store,
@@ -51,10 +51,9 @@ export const Layout = () => {
 
 ---
 
-<img src="https://cdn.evilmartians.com/badges/logo-no-label.svg" alt="" width="22" height="16" />  Made in <b><a href="https://evilmartians.com/devtools?utm_source=nanostores-router&utm_campaign=devtools-button&utm_medium=github">Evil Martians</a></b>, product consulting for <b>developer tools</b>.
+<img src="https://cdn.evilmartians.com/badges/logo-no-label.svg" alt="" width="22" height="16" /> Made in <b><a href="https://evilmartians.com/devtools?utm_source=nanostores-router&utm_campaign=devtools-button&utm_medium=github">Evil Martians</a></b>, product consulting for <b>developer tools</b>.
 
 ---
-
 
 ## Install
 
@@ -62,12 +61,10 @@ export const Layout = () => {
 npm install nanostores @nanostores/router
 ```
 
-
 ## Usage
 
 See [Nano Stores docs](https://github.com/nanostores/nanostores#guide)
 about using the store and subscribing to store’s changes in UI frameworks.
-
 
 ### Routes
 
@@ -111,10 +108,9 @@ createRouter({
  */
 ```
 
-
 ### Search Query Routing
 
-Router value contains parsed url search params:
+Router value contains parsed URL search params (like `?sort=name`):
 
 ```js
 createRouter({ home: '/posts/:category' })
@@ -142,7 +138,6 @@ router.get() //=> {
 //                   search: { }
 //                 }
 ```
-
 
 ### Clicks Tracking
 
@@ -173,7 +168,6 @@ export const Link = (props) => {
 }
 ```
 
-
 ### URL Generation
 
 Using `getPagePath()` avoids hard coding URL in templates. It is better
@@ -192,7 +186,7 @@ or `redirectPage`:
 ```ts
 import { openPage, redirectPage } from '@nanostores/router'
 
-function requireLogin () {
+function requireLogin() {
   openPage($router, 'login')
 }
 
@@ -208,7 +202,6 @@ All functions accept search params as last argument:
 getPagePath($router, 'list', { category: 'guides' }, { sort: 'name' })
 //=> '/posts/guides?sort=name'
 ```
-
 
 ### Server-Side Rendering
 
