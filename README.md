@@ -157,10 +157,10 @@ You can disable this behavior by `links: false` options and create custom
 export const $router = createRouter({ … }, { links: false })
 
 function onClick (e) {
-  let link = event.target.closest('a')
-  if (isPjax(link, e)) {
-    $router.open(new Url(link.href).pathname)
-  }
+  e.preventDefault()
+  let path = new Url(event.target.href).pathname
+  let params = $router.get()?.search
+  openPage($router, '…', { }, { ...params })
 }
 
 export const Link = (props) => {
