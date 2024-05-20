@@ -158,9 +158,7 @@ export const $router = createRouter({ … }, { links: false })
 
 function onClick (e) {
   e.preventDefault()
-  let path = new Url(event.target.href).pathname
-  let params = $router.get()?.search
-  openPage($router, '…', { }, { ...params })
+  $router.open(new Url(e.target.href).pathname)
 }
 
 export const Link = (props) => {
