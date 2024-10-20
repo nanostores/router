@@ -6,7 +6,7 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-- **Small.** 684 bytes (minified and brotlied). Zero dependencies.
+- **Small.** 712 bytes (minified and brotlied). Zero dependencies.
 - Good **TypeScript** support.
 - Framework agnostic. Can be used with **React**, **Preact**, **Vue**,
   **Svelte**, **Angular**, **Solid.js**, and vanilla JS.
@@ -120,12 +120,14 @@ router.get() //=> {
 //                   path: '/posts/general',
 //                   route: 'list',
 //                   params: { category: 'general' },
-//                   search: { sort: 'name' }
+//                   search: { sort: 'name' },
+//                   hash: ''
 //                 }
 ```
 
-To disable the automatic parsing of search params in routes you need to set `search` option.
-Router will now treat search query like `?a=1&b=2` as a string. Parameters order will be critical.
+To disable the automatic parsing of search params in routes you need
+to set `search` option. Router will now treat search query like `?a=1&b=2`
+as a string. Parameters order will be critical.
 
 ```js
 createRouter({ home: '/posts?page=general' }, { search: true })
@@ -135,7 +137,24 @@ router.get() //=> {
 //                   path: '/posts?page=general',
 //                   route: 'list',
 //                   params: { },
-//                   search: { }
+//                   search: { },
+//                   hash: ''
+//                 }
+```
+
+### Hash Routing
+
+Router’s value has current `location.hash` and router updates its value
+on hash changes.
+
+```js
+location.href = '/posts/general#dialog'
+router.get() //=> {
+//                   path: '/posts/general',
+//                   route: 'list',
+//                   params: { category: 'general' },
+//                   search: {},
+//                   hash: '#dialog'
 //                 }
 ```
 

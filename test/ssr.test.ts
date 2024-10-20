@@ -15,6 +15,7 @@ afterEach(() => {
 
 test('opens home by default', () => {
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {},
     path: '/',
     route: 'home',
@@ -28,6 +29,7 @@ test('opens custom page', () => {
   router.open('/posts?q=2')
 
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {},
     path: '/posts',
     route: 'posts',

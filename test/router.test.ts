@@ -80,6 +80,7 @@ afterEach(() => {
 test('parses current location', () => {
   changePath('/posts/guides/10')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       categoryId: 'guides',
       id: '10'
@@ -93,6 +94,7 @@ test('parses current location', () => {
 test('ignores last slash', () => {
   changePath('/posts/guides/10/')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       categoryId: 'guides',
       id: '10'
@@ -111,6 +113,7 @@ test('processes 404', () => {
 test('escapes RegExp symbols in routes', () => {
   changePath('/[secret]/9')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       id: '9'
     },
@@ -123,6 +126,7 @@ test('escapes RegExp symbols in routes', () => {
 test('converts URL-encoded symbols', () => {
   changePath('/posts/a%23b/10')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       categoryId: 'a#b',
       id: '10'
@@ -133,9 +137,10 @@ test('converts URL-encoded symbols', () => {
   })
 })
 
-test('ignores hash and search', () => {
+test('ignores hash and search in pattern matching', () => {
   changePath('/posts/?id=1#top')
   deepStrictEqual(router.get(), {
+    hash: '#top',
     params: {},
     path: '/posts',
     route: 'posts',
@@ -146,6 +151,7 @@ test('ignores hash and search', () => {
 test('ignores case', () => {
   changePath('/POSTS')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {},
     path: '/POSTS',
     route: 'posts',
@@ -156,6 +162,7 @@ test('ignores case', () => {
 test('parameters can be optional', () => {
   changePath('/profile/')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       id: '',
       tab: ''
@@ -167,6 +174,7 @@ test('parameters can be optional', () => {
 
   changePath('/profile/10/')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       id: '10',
       tab: ''
@@ -178,6 +186,7 @@ test('parameters can be optional', () => {
 
   changePath('/profile/10/contacts')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       id: '10',
       tab: 'contacts'
@@ -206,6 +215,7 @@ test('detects URL changes', () => {
 
   changePath('/')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {},
     path: '/',
     route: 'home',
@@ -231,12 +241,34 @@ test('ignores the same URL in popstate', () => {
   deepStrictEqual(events, [])
 })
 
+test('tracks hash changes', () => {
+  changePath('/')
+  let hashes: (string | undefined)[] = []
+  router.listen(page => {
+    hashes.push(page?.hash)
+  })
+
+  changePath('/#')
+  deepStrictEqual(hashes, [])
+
+  changePath('/#1')
+  deepStrictEqual(hashes, ['#1'])
+
+  createTag(document.body, 'a', { href: '/#2' }).click()
+  deepStrictEqual(hashes, ['#1', '#2'])
+
+  location.hash = '#3'
+  window.dispatchEvent(new HashChangeEvent('hashchange'))
+  deepStrictEqual(hashes, ['#1', '#2', '#3'])
+})
+
 test('detects clicks', () => {
   changePath('/')
   let events = listen()
 
   createTag(document.body, 'a', { href: '/posts?a=1' }).click()
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {},
     path: '/posts',
     route: 'posts',
@@ -260,6 +292,7 @@ test('disables clicks detects on request', () => {
 
   createTag(document.body, 'a', { href: '/posts' }).click()
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {},
     path: '/',
     route: 'home',
@@ -383,6 +416,7 @@ test('opens URLs manually', () => {
   router.open('/posts/?a=1')
   equal(location.href, 'http://localhost/posts/?a=1')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {},
     path: '/posts',
     route: 'posts',
@@ -402,6 +436,7 @@ test('ignores the same URL in manual URL', () => {
 test('allows RegExp routes with callback', () => {
   changePath('/posts/draft/10/')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: { id: '10', type: 'draft' },
     path: '/posts/draft/10',
     route: 'draft',
@@ -412,6 +447,7 @@ test('allows RegExp routes with callback', () => {
 test('allows RegExp routes without callback', () => {
   changePath('/named/draft/10/')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: { id: '10', type: 'draft' },
     path: '/named/draft/10',
     route: 'named',
@@ -484,6 +520,7 @@ test('opens URLs manually by route name, pushing new stare', () => {
 
   equal(location.href, 'http://localhost/posts/guides/10')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       categoryId: 'guides',
       id: '10'
@@ -496,6 +533,7 @@ test('opens URLs manually by route name, pushing new stare', () => {
   openPage(router, 'post', { categoryId: 'guides', id: 11 })
   equal(location.href, 'http://localhost/posts/guides/11')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       categoryId: 'guides',
       id: '11'
@@ -531,6 +569,7 @@ test('opens URLs manually by route name, replacing state', () => {
   equal(history.length - start, 2)
   equal(location.href, 'http://localhost/posts/guides/10')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       categoryId: 'guides',
       id: '10'
@@ -543,6 +582,7 @@ test('opens URLs manually by route name, replacing state', () => {
   redirectPage(router, 'post', { categoryId: 'guides', id: 11 })
   equal(location.href, 'http://localhost/posts/guides/11')
   deepStrictEqual(router.get(), {
+    hash: '',
     params: {
       categoryId: 'guides',
       id: '11'
@@ -585,7 +625,8 @@ test('supports link with hash in URL with same path', () => {
   link.click()
 
   equal(location.hash, '#hash')
-  deepStrictEqual(events, [])
+  deepStrictEqual(events, ['/posts'])
+  equal(router.get()?.hash, '#hash')
 })
 
 test('supports link with hash in URL and different path', () => {
@@ -624,7 +665,7 @@ test('generates artificial hashchange event for empty hash', () => {
 
   window.removeEventListener('hashchange', onHashChange)
   equal(location.hash, '')
-  deepStrictEqual(events, [])
+  deepStrictEqual(events, ['/'])
   equal(hashChangeCalled, 1)
 })
 
@@ -643,6 +684,7 @@ test('uses search query on request', () => {
   listen(otherRouter)
 
   deepStrictEqual(otherRouter.get(), {
+    hash: '',
     params: {},
     path: '/p?page=a',
     route: 'a',
@@ -652,6 +694,7 @@ test('uses search query on request', () => {
   let link = createTag(document.body, 'a', { href: '/p?page=b' })
   link.click()
   deepStrictEqual(otherRouter.get(), {
+    hash: '',
     params: {},
     path: '/p?page=b',
     route: 'b',
@@ -660,6 +703,7 @@ test('uses search query on request', () => {
 
   changePath('/p?page=a')
   deepStrictEqual(otherRouter.get(), {
+    hash: '',
     params: {},
     path: '/p?page=a',
     route: 'a',
@@ -668,6 +712,7 @@ test('uses search query on request', () => {
 
   changePath('/p/?page=b')
   deepStrictEqual(otherRouter.get(), {
+    hash: '',
     params: {},
     path: '/p?page=b',
     route: 'b',
@@ -686,6 +731,7 @@ test('supports dot in URL', () => {
   listen(otherRouter)
 
   deepStrictEqual(otherRouter.get(), {
+    hash: '',
     params: {},
     path: '/page.txt',
     route: 'text',

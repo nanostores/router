@@ -16,34 +16,36 @@ export function createRouter(routes, opts = {}) {
       .replace(/\/\\:(\w+)\\\?/g, '(?:/(?<$1>(?<=/)[^/]+))?')
       .replace(/\/\\:(\w+)/g, '/(?<$1>[^/]+)')
 
-    return [
-      name,
-      RegExp('^' + pattern + '$', 'i'),
-      null,
-      value
-    ];
+    return [name, RegExp('^' + pattern + '$', 'i'), null, value]
   })
 
   let prev
-  let parse = path => {
-    path = path.replace(/\/($|\?)/, '$1') || '/'
-    if (prev === path) return false
-    prev = path
+  let parse = href => {
+    let url = new URL(href.replace(/#$/, ''), 'http://a')
+    let cache = url.pathname + url.search + url.hash
+    if (prev === cache) return false
+    prev = cache
 
-    let url = new URL(path, 'http://a')
-    if (!opts.search) path = url.pathname
+    let path = opts.search ? url.pathname + url.search : url.pathname
+    path = path.replace(/\/($|\?)/, '$1') || '/'
 
     for (let [route, pattern, callback] of router.routes) {
       let match = path.match(pattern)
       if (match) {
         return {
-          // If route has callback for params decoding use it. Otherwise decode params from named capture groups
-          params: callback ? callback(...match.slice(1)) : Object.keys({...match.groups}).reduce((pars, key) => {
-            // match === undefined when nothing captured in regexp group
-            // and we swap it with empty string for backward compatibility
-            pars[key] = match.groups[key] ? decodeURIComponent(match.groups[key]) : '';
-            return pars
-          }, {}),
+          hash: url.hash,
+          // If route has callback for params decoding use it.
+          // Otherwise decode params from named capture groups
+          params: callback
+            ? callback(...match.slice(1))
+            : Object.keys({ ...match.groups }).reduce((pars, key) => {
+                // match === undefined when nothing captured in regexp group
+                // and we swap it with empty string for backward compatibility
+                pars[key] = match.groups[key]
+                  ? decodeURIComponent(match.groups[key])
+                  : ''
+                return pars
+              }, {}),
           path,
           route,
           search: Object.fromEntries(url.searchParams)
@@ -69,9 +71,9 @@ export function createRouter(routes, opts = {}) {
       !event.defaultPrevented // Click was not cancelled
     ) {
       event.preventDefault()
-      let changed = location.hash !== link.hash
-      router.open(link.pathname + link.search)
-      if (changed) {
+      let hashChanged = location.hash !== link.hash
+      router.open(link.href)
+      if (hashChanged) {
         location.hash = link.hash
         if (link.hash === '' || link.hash === '#') {
           window.dispatchEvent(new HashChangeEvent('hashchange'))
@@ -85,21 +87,23 @@ export function createRouter(routes, opts = {}) {
     delete router.set
   }
 
-  let popstate = () => {
-    let page = parse(location.pathname + location.search)
+  let change = () => {
+    let page = parse(location.href)
     if (page !== false) set(page)
   }
 
   if (typeof window !== 'undefined' && typeof location !== 'undefined') {
     onMount(router, () => {
-      let page = parse(location.pathname + location.search)
+      let page = parse(location.href)
       if (page !== false) set(page)
       if (opts.links !== false) document.body.addEventListener('click', click)
-      window.addEventListener('popstate', popstate)
+      window.addEventListener('popstate', change)
+      window.addEventListener('hashchange', change)
       return () => {
         prev = undefined
         document.body.removeEventListener('click', click)
-        window.removeEventListener('popstate', popstate)
+        window.removeEventListener('popstate', change)
+        window.removeEventListener('hashchange', change)
       }
     })
   } else {

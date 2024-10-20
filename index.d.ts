@@ -90,6 +90,7 @@ export type Page<
   PageName extends keyof Config = any
 > = PageName extends any
   ? {
+      hash: string
       params: ParamsFromConfig<Config>[PageName]
       path: string
       route: PageName
