@@ -10,7 +10,7 @@ type Split<S extends string, D extends string> = string extends S
   : [S]
 
 // Converting path array to object
-type PathToParams<PathArray, Params = {}> = PathArray extends [
+type PathToParams<PathArray, Params> = PathArray extends [
   infer First,
   ...infer Rest
 ]
@@ -22,7 +22,7 @@ type PathToParams<PathArray, Params = {}> = PathArray extends [
     : PathToParams<Rest, Params>
   : Params
 
-type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>>
+type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>, unknown>
 
 export type RouterConfig = Record<string, Pattern<any> | RegExp | string>
 
