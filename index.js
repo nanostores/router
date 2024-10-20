@@ -34,17 +34,13 @@ export function createRouter(routes, opts = {}) {
       if (match) {
         return {
           hash: url.hash,
-          // If route has callback for params decoding use it.
-          // Otherwise decode params from named capture groups
           params: callback
             ? callback(...match.slice(1))
-            : Object.keys({ ...match.groups }).reduce((pars, key) => {
-                // match === undefined when nothing captured in regexp group
-                // and we swap it with empty string for backward compatibility
-                pars[key] = match.groups[key]
+            : Object.keys({ ...match.groups }).reduce((params, key) => {
+                params[key] = match.groups[key]
                   ? decodeURIComponent(match.groups[key])
                   : ''
-                return pars
+                return params
               }, {}),
           path,
           route,
