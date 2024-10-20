@@ -22,7 +22,8 @@ type PathToParams<PathArray, Params> = PathArray extends [
     : PathToParams<Rest, Params>
   : Params
 
-type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>, unknown>
+/* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>, {}>
 
 export type RouterConfig = Record<string, Pattern<any> | RegExp | string>
 
