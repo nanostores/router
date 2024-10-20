@@ -3,20 +3,20 @@ import { atom, onMount } from 'nanostores'
 export function createRouter(routes, opts = {}) {
   let router = atom()
   router.routes = Object.keys(routes).map(name => {
-    let value = routes[name]
+    let pattern = routes[name]
 
-    if (typeof value !== 'string') {
-      return [name, ...[value].flat()]
+    if (typeof pattern !== 'string') {
+      return [name, ...[pattern].flat()]
     }
 
-    value = value.replace(/\/$/g, '') || '/'
+    pattern = pattern.replace(/\/$/g, '') || '/'
 
-    let pattern = value
+    let regexp = pattern
       .replace(/[\s!#$()+,.:<=?[\\\]^{|}]/g, '\\$&')
       .replace(/\/\\:(\w+)\\\?/g, '(?:/(?<$1>(?<=/)[^/]+))?')
       .replace(/\/\\:(\w+)/g, '/(?<$1>[^/]+)')
 
-    return [name, RegExp('^' + pattern + '$', 'i'), null, value]
+    return [name, RegExp('^' + regexp + '$', 'i'), null, pattern]
   })
 
   let prev
@@ -29,8 +29,8 @@ export function createRouter(routes, opts = {}) {
     let path = opts.search ? url.pathname + url.search : url.pathname
     path = path.replace(/\/($|\?)/, '$1') || '/'
 
-    for (let [route, pattern, callback] of router.routes) {
-      let match = path.match(pattern)
+    for (let [route, regexp, callback] of router.routes) {
+      let match = path.match(regexp)
       if (match) {
         return {
           hash: url.hash,
@@ -71,7 +71,7 @@ export function createRouter(routes, opts = {}) {
       router.open(link.href)
       if (hashChanged) {
         location.hash = link.hash
-        if (link.hash === '' || link.hash === '#') {
+        if (!link.hash || link.hash === '#') {
           window.dispatchEvent(new HashChangeEvent('hashchange'))
         }
       }
@@ -135,7 +135,7 @@ export function getPagePath(router, name, params, search) {
   }
   let path = route[3]
     .replace(/\/:\w+\?/g, i => {
-      let param = params ? params[i.slice(2).slice(0, -1)] : null
+      let param = params && params[i.slice(2, -1)]
       if (param) {
         return '/' + encodeURIComponent(param)
       } else {
@@ -143,12 +143,11 @@ export function getPagePath(router, name, params, search) {
       }
     })
     .replace(/\/:\w+/g, i => '/' + encodeURIComponent(params[i.slice(2)]))
-  let postfix = ''
   if (search) {
-    postfix = '' + new URLSearchParams(search)
-    if (postfix) postfix = '?' + postfix
+    let postfix = '' + new URLSearchParams(search)
+    if (postfix) return path + '?' + postfix
   }
-  return (path || '/') + postfix
+  return path
 }
 
 export function openPage(router, name, params, search) {
