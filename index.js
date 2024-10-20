@@ -71,7 +71,7 @@ export function createRouter(routes, opts = {}) {
       router.open(link.href)
       if (hashChanged) {
         location.hash = link.hash
-        if (!link.hash || link.hash === '#') {
+        if (link.hash === '' || link.hash === '#') {
           window.dispatchEvent(new HashChangeEvent('hashchange'))
         }
       }
