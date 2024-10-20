@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.16.1
+* Fixed types regression.
+
 ## 0.16.0
 * Added `hash` with `#`-part to store’s value.
 
