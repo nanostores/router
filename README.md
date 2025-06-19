@@ -25,7 +25,7 @@ export const $router = createRouter({
 })
 ```
 
-Store in active mode listen for `<a>` clicks on `document.body` and Back button
+Store in active mode listens for `<a>` clicks on `document.body` and Back button
 in browser.
 
 ```tsx
