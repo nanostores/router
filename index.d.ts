@@ -102,6 +102,7 @@ export type Page<
 export interface RouterOptions {
   links?: boolean
   search?: boolean
+  html5?: boolean
 }
 
 /**

@@ -1,6 +1,8 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+* Optional no HTML5 routing
+
 ## 1.0.0
 * Added Nano Stores 1.0 support.
 * Removed Node.js 18 support.

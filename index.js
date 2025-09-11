@@ -22,6 +22,9 @@ export function createRouter(routes, opts = {}) {
   let prev
   let parse = href => {
     let url = new URL(href.replace(/#$/, ''), 'http://a')
+    if (opts.html5 === false) {
+      url = new URL(url.hash.substring(1), 'http://a');
+    }
     let cache = url.pathname + url.search + url.hash
     if (prev === cache) return false
     prev = cache
