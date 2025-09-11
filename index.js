@@ -2,6 +2,7 @@ import { atom, onMount } from 'nanostores'
 
 export function createRouter(routes, opts = {}) {
   let router = atom()
+  router.opts = opts;
   router.routes = Object.keys(routes).map(name => {
     let pattern = routes[name]
 
@@ -150,7 +151,7 @@ export function getPagePath(router, name, params, search) {
     let postfix = '' + new URLSearchParams(search)
     if (postfix) return path + '?' + postfix
   }
-  return path
+  return router.opts.html5 === false ? '#' + path : path
 }
 
 export function openPage(router, name, params, search) {
