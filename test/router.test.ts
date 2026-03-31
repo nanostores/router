@@ -43,7 +43,7 @@ function createTag(
 ): HTMLElement {
   let el = document.createElement(tag)
   for (let name in attrs) {
-    el.setAttribute(name, attrs[name])
+    el.setAttribute(name, attrs[name]!)
   }
   parent.appendChild(el)
   return el

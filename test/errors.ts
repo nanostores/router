@@ -13,7 +13,7 @@ router.subscribe(page => {
   } else if (page.route === 'post') {
     // THROWS Property 'type' does not exist on type 'Record<"id"
     router.open(`/post/${page.params.type}`)
-    // THROWS '"home" | "exit" | "create"' and '"creat"' have no overlap
+    // THROWS '"create" | "exit" | "home"' and '"creat"' have no overlap
   } else if (page.route === 'creat') {
     console.log('create')
   }

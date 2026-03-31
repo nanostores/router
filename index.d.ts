@@ -4,10 +4,10 @@ import type { ReadableAtom } from 'nanostores'
 type Split<S extends string, D extends string> = string extends S
   ? string[]
   : S extends ''
-  ? []
-  : S extends `${infer T}${D}${infer U}`
-  ? [T, ...Split<U, D>]
-  : [S]
+    ? []
+    : S extends `${infer T}${D}${infer U}`
+      ? [T, ...Split<U, D>]
+      : [S]
 
 // Converting path array to object
 type PathToParams<PathArray, Params> = PathArray extends [
@@ -27,19 +27,16 @@ type ParseUrl<Path extends string> = PathToParams<Split<Path, '/'>, {}>
 
 export type RouterConfig = Record<string, Pattern<any> | RegExp | string>
 
-export type ConfigFromRouter<SomeRouter> = SomeRouter extends Router<
-  infer Config
->
-  ? Config
-  : never
+export type ConfigFromRouter<SomeRouter> =
+  SomeRouter extends Router<infer Config> ? Config : never
 
 // Converting routes to params
 type ParamsFromConfig<K extends RouterConfig> = {
   [key in keyof K]: K[key] extends Pattern<infer P>
     ? P
     : K[key] extends string
-    ? ParseUrl<K[key]>
-    : never
+      ? ParseUrl<K[key]>
+      : never
 }
 
 // Converting string params to string | number
@@ -62,10 +59,10 @@ export type ParamsArg<
 > = keyof ParamsFromConfig<Config>[PageName] extends never
   ? [EmptyObject?, SearchParams?]
   : keyof ParamsFromConfig<Config>[PageName] extends OptionalKeys<
-      ParamsFromConfig<Config>[PageName]
-    >
-  ? [Input<ParamsFromConfig<Config>[PageName]>?, SearchParams?]
-  : [Input<ParamsFromConfig<Config>[PageName]>, SearchParams?]
+        ParamsFromConfig<Config>[PageName]
+      >
+    ? [Input<ParamsFromConfig<Config>[PageName]>?, SearchParams?]
+    : [Input<ParamsFromConfig<Config>[PageName]>, SearchParams?]
 
 type Pattern<RouteParams> = Readonly<
   [RegExp, (...parts: string[]) => RouteParams]
@@ -119,8 +116,9 @@ export interface RouterOptions {
  * })
  * ```
  */
-export interface Router<Config extends RouterConfig = RouterConfig>
-  extends ReadableAtom<Page<Config, keyof Config> | undefined> {
+export interface Router<
+  Config extends RouterConfig = RouterConfig
+> extends ReadableAtom<Page<Config, keyof Config> | undefined> {
   /**
    * Open URL without page reloading.
    *
