@@ -37,11 +37,11 @@ export function createRouter(routes, opts = {}) {
           params: callback
             ? callback(...match.slice(1))
             : Object.keys({ ...match.groups }).reduce((params, key) => {
-                params[key] = match.groups[key]
-                  ? decodeURIComponent(match.groups[key])
-                  : ''
-                return params
-              }, {}),
+              params[key] = match.groups[key]
+                ? decodeURIComponent(match.groups[key])
+                : ''
+              return params
+            }, {}),
           path,
           route,
           search: Object.fromEntries(url.searchParams)
@@ -68,8 +68,7 @@ export function createRouter(routes, opts = {}) {
     ) {
       event.preventDefault()
       let hashChanged = location.hash !== link.hash
-      router.open(link.href)
-      if (hashChanged) {
+      if (router.open(link.href) && hashChanged) {
         location.hash = link.hash
         if (link.hash === '' || link.hash === '#') {
           window.dispatchEvent(new HashChangeEvent('hashchange'))
@@ -78,20 +77,14 @@ export function createRouter(routes, opts = {}) {
     }
   }
 
-  let set = router.set
-  if (process.env.NODE_ENV !== 'production') {
-    delete router.set
-  }
-
   let change = () => {
     let page = parse(location.href)
-    if (page !== false) set(page)
+    if (page !== false) router.set(page)
   }
 
   if (typeof window !== 'undefined' && typeof location !== 'undefined') {
     onMount(router, () => {
-      let page = parse(location.href)
-      if (page !== false) set(page)
+      change()
       if (opts.links !== false) document.body.addEventListener('click', click)
       window.addEventListener('popstate', change)
       window.addEventListener('hashchange', change)
@@ -103,20 +96,20 @@ export function createRouter(routes, opts = {}) {
       }
     })
   } else {
-    set(parse('/'))
+    router.set(parse('/'))
   }
 
   router.open = (path, redirect) => {
     let page = parse(path)
     if (page !== false) {
-      if (typeof history !== 'undefined') {
-        if (redirect) {
-          history.replaceState(null, null, path)
-        } else {
-          history.pushState(null, null, path)
+      router.set(page)
+      if (router.value === page) {
+        if (typeof history !== 'undefined') {
+          history[redirect ? 'replaceState' : 'pushState'](null, null, path)
         }
+        return page
       }
-      set(page)
+      prev = undefined
     }
   }
 

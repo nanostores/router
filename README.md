@@ -6,7 +6,7 @@
 A tiny URL router for [Nano Stores](https://github.com/nanostores/nanostores)
 state manager.
 
-- **Small.** 712 bytes (minified and brotlied). Zero dependencies.
+- **Small.** 725 bytes (minified and brotlied). Zero dependencies.
 - Good **TypeScript** support.
 - Framework agnostic. Can be used with **React**, **Preact**, **Vue**,
   **Svelte**, **Angular**, **Solid.js**, and vanilla JS.
@@ -219,6 +219,29 @@ All functions accept search params as last argument:
 getPagePath($router, 'list', { category: 'guides' }, { sort: 'name' })
 //=> '/posts/guides?sort=name'
 ```
+
+### Preventing Navigation
+
+Navigation is derived from the store value: the URL changes only after the
+store changed. So you can use Nano Stores `onSet` event to prevent navigation,
+for example, to keep the user on a form with unsaved changes.
+
+```ts
+import { onSet } from 'nanostores'
+
+onSet($router, ({ newValue, abort }) => {
+  if (hasUnsavedChanges && !confirm('Discard changes?')) {
+    abort()
+  }
+})
+```
+
+`abort()` stops `$router.open()`, `openPage()`, `redirectPage()`, and tracked
+`<a>` clicks: neither the store nor the URL will change.
+
+Browser Back/Forward buttons change the URL before `onSet` runs,
+so `abort()` will keep the store on the old value but will **not** roll back the
+address bar. Add your own `history.pushState` in the listener if you need that.
 
 ### Server-Side Rendering
 
