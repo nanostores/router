@@ -2,6 +2,10 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.0
+
+- Added preventing navigation with `onSet` (by @Lezvix).
+
 ## 1.0.0
 
 - Added Nano Stores 1.0 support.
