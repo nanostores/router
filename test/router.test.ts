@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom'
-import { cleanStores } from 'nanostores'
+import { cleanStores, onSet } from 'nanostores'
 import { deepStrictEqual, equal, throws } from 'node:assert'
 import { afterEach, test } from 'node:test'
 
@@ -740,4 +740,80 @@ test('supports dot in URL', () => {
 
   changePath('/page.html')
   deepStrictEqual(otherRouter.get(), undefined)
+})
+
+test('allows to prevent open() by onSet', () => {
+  changePath('/')
+  let events = listen()
+  let unbind = onSet(router, ({ abort }) => {
+    abort()
+  })
+
+  router.open('/posts/guides/10')
+
+  equal(router.get()?.path, '/')
+  equal(location.href, 'http://localhost/')
+  deepStrictEqual(events, [])
+  unbind()
+})
+
+test('allows to prevent openPage and redirectPage by onSet', () => {
+  changePath('/')
+  let unbind = onSet(router, ({ abort }) => {
+    abort()
+  })
+
+  openPage(router, 'post', { categoryId: 'guides', id: '10' })
+  equal(router.get()?.path, '/')
+  equal(location.href, 'http://localhost/')
+
+  redirectPage(router, 'post', { categoryId: 'guides', id: '10' })
+  equal(router.get()?.path, '/')
+  equal(location.href, 'http://localhost/')
+  unbind()
+})
+
+test('allows to prevent link click by onSet', () => {
+  changePath('/')
+  let events = listen()
+  let unbind = onSet(router, ({ abort }) => {
+    abort()
+  })
+
+  createTag(document.body, 'a', { href: '/posts?a=1' }).click()
+
+  equal(router.get()?.path, '/')
+  equal(location.href, 'http://localhost/')
+  deepStrictEqual(events, [])
+  unbind()
+})
+
+test('does not change hash when onSet aborts link click', () => {
+  changePath('/posts')
+  let unbind = onSet(router, ({ abort }) => {
+    abort()
+  })
+
+  createTag(document.body, 'a', { href: '/posts#hash' }).click()
+
+  equal(location.hash, '')
+  equal(router.get()?.hash, '')
+  unbind()
+})
+
+test('allows to navigate again after onSet abort', () => {
+  changePath('/')
+  let events = listen()
+
+  let unbind = onSet(router, ({ abort }) => {
+    abort()
+  })
+  router.open('/posts/guides/10')
+  equal(router.get()?.path, '/')
+  unbind()
+
+  router.open('/posts/guides/10')
+  equal(router.get()?.path, '/posts/guides/10')
+  equal(location.href, 'http://localhost/posts/guides/10')
+  deepStrictEqual(events, ['/posts/guides/10'])
 })
