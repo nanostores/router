@@ -65,7 +65,7 @@ export type ParamsArg<
     : [Input<ParamsFromConfig<Config>[PageName]>, SearchParams?]
 
 type Pattern<RouteParams> = Readonly<
-  [RegExp, (...parts: string[]) => RouteParams]
+  [RegExp, (...parts: string[]) => RouteParams, ((params: RouteParams) => string)?]
 >
 
 export type InputPage<
@@ -135,7 +135,7 @@ export interface Router<
   /**
    * Converted routes.
    */
-  routes: [string, RegExp, (...params: string[]) => object, string?][]
+  routes: [string, RegExp, ((...params: string[]) => object)?, string | ((params: any) => string)?][]
 }
 
 /**
