@@ -45,5 +45,8 @@ redirectPage(router, { route: 'post', params: { category: 'guides' } })
 // THROWS No overload matches this call.
 redirectPage(router, 'home', { id: '1' })
 
+// THROWS No overload matches this call.
+openPage(router, 'create', { wrong: 'draft' })
+
 // THROWS Property 'set' does not exist on type
 router.set({ route: 'home', params: {}, path: '/' })
