@@ -1,7 +1,7 @@
 import { createRouter, openPage, redirectPage } from '../index.js'
 
 let router = createRouter({
-  create: [/\/post\/(new|draft)/, type => ({ mode: 'editor', type })],
+  create: [/\/post\/(new|draft)/, type => ({ mode: 'editor' as const, type }), ({ type }) => `/post/${type}`],
   exit: '/exit',
   home: '/',
   post: '/post/:id',
@@ -30,5 +30,7 @@ router.subscribe(page => {
     redirectPage(router, 'home')
   } else if (page.route === 'create') {
     console.log(page.params.type, page.params.mode)
+    openPage(router, 'create', { mode: 'editor', type: 'draft' })
+    redirectPage(router, 'create', { mode: 'editor', type: 'new' })
   }
 })

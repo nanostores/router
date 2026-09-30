@@ -126,7 +126,7 @@ export function getPagePath(router, name, params, search) {
   if (process.env.NODE_ENV !== 'production') {
     if (!route[3]) throw new Error('RegExp routes are not supported')
   }
-  let path = route[3]
+  let path = typeof route[3] === 'string' ? route[3]
     .replace(/\/:\w+\?/g, i => {
       let param = params && params[i.slice(2, -1)]
       if (param) {
@@ -136,6 +136,7 @@ export function getPagePath(router, name, params, search) {
       }
     })
     .replace(/\/:\w+/g, i => '/' + encodeURIComponent(params[i.slice(2)]))
+    : route[3](params)
   if (search) {
     let postfix = '' + new URLSearchParams(search)
     if (postfix) return path + '?' + postfix

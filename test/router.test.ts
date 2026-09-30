@@ -50,7 +50,7 @@ function createTag(
 }
 
 let router = createRouter({
-  draft: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ id, type })],
+  draft: [/\/posts\/(draft|new)\/(\d+)/, (type, id) => ({ id, type }), ({ id, type }) => `/posts/${type}/${id}`],
   home: '/',
   named: /\/named\/(?<type>draft|new)\/(?<id>\d+)/,
   optional: '/profile/:id?/:tab?',
@@ -444,6 +444,22 @@ test('allows RegExp routes with callback', () => {
   })
 })
 
+test('generates and navigates a RegExp route with a reverse converter', () => {
+  equal(getPagePath(router, 'draft', { id: '10', type: 'draft' }), '/posts/draft/10')
+  equal(getPagePath(router, 'draft', { id: '11', type: 'new' }, { source: 'nav' }), '/posts/new/11?source=nav')
+  changePath('/')
+  listen()
+  let before = history.length
+  openPage(router, 'draft', { id: '12', type: 'new' })
+  equal(location.pathname, '/posts/new/12')
+  equal(history.length, before + 1)
+  deepStrictEqual(router.get()?.params, { id: '12', type: 'new' })
+  redirectPage(router, 'draft', { id: '13', type: 'draft' })
+  equal(location.pathname, '/posts/draft/13')
+  equal(history.length, before + 1)
+  deepStrictEqual(router.get()?.params, { id: '13', type: 'draft' })
+})
+
 test('allows RegExp routes without callback', () => {
   changePath('/named/draft/10/')
   deepStrictEqual(router.get(), {
@@ -613,7 +629,7 @@ test('opens URLs manually by route name, replacing state', () => {
 
 test('throws on opening RegExp router', () => {
   throws(() => {
-    getPagePath(router, 'draft', { id: '1', type: 'new' })
+    getPagePath(router, 'named' as 'home')
   }, /RegExp routes are not supported/)
 })
 
