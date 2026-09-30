@@ -88,22 +88,27 @@ createRouter({
 ```
 
 Routes can have RegExp patterns. They should be an array with function,
-which convert `()` groups to key-value map.
+which convert `()` groups to key-value map. Add optional second function,
+which converts params back to URL, to use the route in `getPagePath()`,
+`openPage()`, and `redirectPage()`.
 
 For TypeScript, router parameters will be converted to types automatically.
-You need to use TypeScript ≥5.x.
 
 ```ts
 createRouter({
   routeName: '/path/:var1/and/:var2',
-  routeName2: [/path2/, () => ({ num: 1, str: '' })]
+  routeName2: [
+    /\/posts\/(\d+)/,
+    id => ({ id: Number(id) }),
+    p => `/posts/${p.id}`
+  ]
 })
 
 /**
  * Params will be inferred as:
  * {
  *   routeName: { var1: string, var2: string },
- *   routeName2: { num: number, str: string }
+ *   routeName2: { id: number }
  * }
  */
 ```
