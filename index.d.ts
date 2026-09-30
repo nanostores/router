@@ -135,7 +135,7 @@ export interface Router<
   /**
    * Converted routes.
    */
-  routes: [string, RegExp, ((...params: string[]) => object)?, string | ((params: any) => string)?][]
+  routes: [string, RegExp, ((...params: string[]) => object)?, (string | ((params: object) => string))?][]
 }
 
 /**
