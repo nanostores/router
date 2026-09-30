@@ -2,6 +2,11 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.0
+
+- Added URL generation for RegExp routes (by @DeepanshuPal).
+- Removed Node.js 20 support.
+
 ## 1.1.0
 
 - Added preventing navigation with `onSet` (by @Lezvix).
