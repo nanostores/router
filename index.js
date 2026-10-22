@@ -129,7 +129,7 @@ export function getPagePath(router, name, params, search) {
   let path = typeof route[3] === 'string' ? route[3]
     .replace(/\/:\w+\?/g, i => {
       let param = params && params[i.slice(2, -1)]
-      if (param) {
+      if (param || param === 0) {
         return '/' + encodeURIComponent(param)
       } else {
         return ''
