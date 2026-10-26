@@ -505,6 +505,8 @@ test('generates URLs', () => {
     '/profile/10/a%23b'
   )
   equal(getPagePath(router, 'optional'), '/profile')
+  equal(getPagePath(router, 'optional', { id: 0 }), '/profile/0')
+  equal(getPagePath(router, 'optional', { id: 0, tab: 0 }), '/profile/0/0')
 
   equal(getPagePath(router, { params: {}, route: 'posts' }), '/posts')
   equal(
