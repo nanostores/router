@@ -2,6 +2,10 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.1
+
+- Fixed `0` in optional params of `getPagePath` (by @lprnmns).
+
 ## 2.0.0
 
 - Added URL generation for RegExp routes (by @DeepanshuPal).
