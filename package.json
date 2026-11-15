@@ -58,7 +58,7 @@
       "import": {
         "./index.js": "{ createRouter }"
       },
-      "limit": "765 B"
+      "limit": "796 B"
     }
   ],
   "engines": {

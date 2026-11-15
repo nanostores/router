@@ -12,6 +12,8 @@ export function createRouter(routes, opts = {}) {
     pattern = pattern.replace(/\/$/g, '') || '/'
 
     let regexp = pattern
+      // Encode symbols like URL in `parse()` does: `é` → `%C3%A9`
+      .replace(/[^!#-;=?-_a-z|~]/gu, encodeURIComponent)
       .replace(/[\s!#$()+,.:<=?[\\\]^{|}]/g, '\\$&')
       .replace(/\/\\:(\w+)\\\?/g, '(?:/(?<$1>(?<=/)[^/]+))?')
       .replace(/\/\\:(\w+)/g, '/(?<$1>[^/]+)')
@@ -37,9 +39,12 @@ export function createRouter(routes, opts = {}) {
           params: callback
             ? callback(...match.slice(1))
             : Object.keys({ ...match.groups }).reduce((params, key) => {
-              params[key] = match.groups[key]
-                ? decodeURIComponent(match.groups[key])
-                : ''
+              params[key] = match.groups[key] || ''
+              try {
+                params[key] = decodeURIComponent(params[key])
+              } catch {
+                // Keep params with broken encoding like `100%` as is
+              }
               return params
             }, {}),
           path,
