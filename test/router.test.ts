@@ -137,6 +137,33 @@ test('converts URL-encoded symbols', () => {
   })
 })
 
+test('matches static segments with non-ASCII symbols and spaces', () => {
+  let encoded = createRouter({
+    about: '/about us/:id',
+    cafe: '/café',
+    quote: '/{q}'
+  })
+  encoded.open('/caf%C3%A9')
+  equal(encoded.get()?.route, 'cafe')
+  encoded.open('/about%20us/1')
+  deepStrictEqual(encoded.get()?.params, { id: '1' })
+  equal(encoded.get()?.route, 'about')
+  encoded.open('/%7Bq%7D')
+  equal(encoded.get()?.route, 'quote')
+  openPage(encoded, 'cafe')
+  equal(encoded.get()?.route, 'cafe')
+  openPage(encoded, 'about', { id: 'a b' })
+  deepStrictEqual(encoded.get()?.params, { id: 'a b' })
+  cleanStores(encoded)
+})
+
+test('keeps params with broken URL encoding as is', () => {
+  changePath('/posts/100%/1')
+  deepStrictEqual(router.get()?.params, { categoryId: '100%', id: '1' })
+  changePath('/posts/%E0%A4%A/2')
+  deepStrictEqual(router.get()?.params, { categoryId: '%E0%A4%A', id: '2' })
+})
+
 test('ignores hash and search in pattern matching', () => {
   changePath('/posts/?id=1#top')
   deepStrictEqual(router.get(), {
